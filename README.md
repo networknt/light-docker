@@ -6,6 +6,29 @@ Dockerfile and compose to bring everything up together with your APIs
 
 # Docker Light OAuth2
 
+The oauth2 server uses json files for clients and users registration and these files can be externalized.
+
+If you want to use the default clients and users for testing.
+
+```
+docker run -d -p 8888:8888 networknt/oauth2-server
+```
+If you want to add more users and clients for your development, please create a folder and copy clients.json and users.json and add more entries.
+```
+docker run -d -v /home/steve/tmp/config/oauth2:/config -p 8888:8888 networknt/oauth2-server
+```
+For more info on how to use it, please refer to https://github.com/networknt/undertow-server-oauth2
+
+or watch the following two videos.
+
+How to start the oauth2 server in docker container
+
+https://youtu.be/w0a8f0hJVmU
+
+How to customize the oauth2 server
+
+https://youtu.be/eq1BxjDFg6o
+
 # Docker Grafana
 
 This project builds a Docker image with the latest master build of Grafana.
