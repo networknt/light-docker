@@ -19,7 +19,7 @@ services:
       - light
 
   grafana:
-    build: grafana
+    build: grafana/
     ports:
       - "3000:3000"
     links:
