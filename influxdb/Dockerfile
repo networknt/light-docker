@@ -1,2 +1,4 @@
 FROM tutum/influxdb
+ENV ADMIN_USER root
+ENV INFLUXDB_INIT_PWD root
 ENV PRE_CREATE_DB metrics
