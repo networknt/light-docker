@@ -1,5 +1,11 @@
 # light-docker
-Dockerfile and compose to bring everything up together with your APIs
+Dockerfile and compose to bring everything up together with your APIs.
+
+To start all services at the same time. 
+
+```
+docker-compose up --build
+```
 
 # Docker API
 
