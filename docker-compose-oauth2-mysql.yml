@@ -4,6 +4,8 @@
       image: mysql:5.7.16
       volumes:
         - ./light-oauth2/mysql:/docker-entrypoint-initdb.d
+      networks:
+        - localnet
       environment:
         MYSQL_ROOT_PASSWORD: my-secret-pw
     oauth2-code:
