@@ -1,0 +1,141 @@
+  version: '2'
+  services:
+    postgresdb:
+      image: postgres:9.6.0
+      volumes:
+        - ./light-oauth2/postgres:/docker-entrypoint-initdb.d
+      networks:
+        - localnet
+      environment:
+        POSTGRES_PASSWORD: my-secret-pw
+        POSTGRES_DB: oauth2
+    oauth2-code:
+      image: networknt/oauth2-code
+      ports:
+        - "6881:6881"
+      volumes:
+        - ./light-oauth2/postgres/config:/config
+      networks:
+        - localnet
+      depends_on:
+        - postgresdb
+      links:
+        - postgresdb
+      #logging:
+      #  driver: "gelf"
+      #  options:
+      #    gelf-address: "udp://localhost:12201"
+      #    tag: "oauth2-code"
+      #    env: "dev"
+    oauth2-token:
+      image: networknt/oauth2-token
+      ports:
+        - "6882:6882"
+      volumes:
+        - ./light-oauth2/postgres/config:/config
+      networks:
+        - localnet
+      depends_on:
+        - postgresdb
+      links:
+        - postgresdb
+      #logging:
+      #  driver: "gelf"
+      #  options:
+      #    gelf-address: "udp://localhost:12201"
+      #    tag: "oauth2-token"
+      #    env: "dev"
+    oauth2-service:
+      image: networknt/oauth2-service
+      ports:
+        - "6883:6883"
+      volumes:
+        - ./light-oauth2/postgres/config:/config
+      networks:
+        - localnet
+      depends_on:
+        - postgresdb
+      links:
+        - postgresdb
+      #logging:
+      #  driver: "gelf"
+      #  options:
+      #    gelf-address: "udp://localhost:12201"
+      #    tag: "oauth2-service"
+      #    env: "dev"
+    oauth2-client:
+      image: networknt/oauth2-client
+      ports:
+        - "6884:6884"
+      volumes:
+        - ./light-oauth2/postgres/config:/config
+      networks:
+        - localnet
+      depends_on:
+        - postgresdb
+      links:
+        - postgresdb
+      #logging:
+      #  driver: "gelf"
+      #  options:
+      #    gelf-address: "udp://localhost:12201"
+      #    tag: "oauth2-client"
+      #    env: "dev"
+    oauth2-user:
+      image: networknt/oauth2-user
+      ports:
+        - "6885:6885"
+      volumes:
+        - ./light-oauth2/postgres/config:/config
+      networks:
+        - localnet
+      depends_on:
+        - postgresdb
+      links:
+        - postgresdb
+      #logging:
+      #  driver: "gelf"
+      #  options:
+      #    gelf-address: "udp://localhost:12201"
+      #    tag: "oauth2-user"
+      #    env: "dev"
+    oauth2-key:
+      image: networknt/oauth2-key
+      ports:
+        - "6886:6886"
+      volumes:
+        - ./light-oauth2/postgres/config:/config
+      networks:
+        - localnet
+      depends_on:
+        - postgresdb
+      links:
+        - postgresdb
+      #logging:
+      #  driver: "gelf"
+      #  options:
+      #    gelf-address: "udp://localhost:12201"
+      #    tag: "oauth2-key"
+      #    env: "dev"
+    oauth2-refresh-token:
+      image: networknt/oauth2-refresh-token
+      ports:
+        - "6887:6887"
+      volumes:
+        - ./light-oauth2/postgres/config:/config
+      networks:
+        - localnet
+      depends_on:
+        - postgresdb
+      links:
+        - postgresdb
+      #logging:
+      #  driver: "gelf"
+      #  options:
+      #    gelf-address: "udp://localhost:12201"
+      #    tag: "oauth2-refresh-token"
+      #    env: "dev"
+
+  networks:
+    localnet:
+      external: true
