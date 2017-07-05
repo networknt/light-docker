@@ -1,0 +1,65 @@
+version: '2'
+
+services:
+
+  consul:
+    image:  gliderlabs/consul:latest
+    command: "agent -server -data-dir /tmp/consul -bootstrap -ui -client=0.0.0.0"
+    ports:
+    - 8500:8500
+    - 8400:8400
+
+  registrator:
+    image: gliderlabs/registrator:latest
+    command: "consul://consul:8500"
+    depends_on:
+    - consul
+    links:
+    - consul
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+
+  apia:
+    image: networknt/com.networknt.apia-1.0.0
+    ports:
+    - "7001:7001"
+    depends_on:
+    - registrator
+    - consul
+    links:
+    - registrator
+    - consul
+
+
+  apib:
+    image: networknt/com.networknt.apib-1.0.0
+    ports:
+    - "7002:7002"
+    depends_on:
+    - registrator
+    - consul
+    links:
+    - registrator
+    - consul
+
+  apic:
+    image: networknt/com.networknt.apic-1.0.0
+    ports:
+    - "7003:7003"
+    depends_on:
+    - registrator
+    - consul
+    links:
+    - registrator
+    - consul
+
+  apid:
+    image: networknt/com.networknt.apid-1.0.0
+    ports:
+    - "7004:7004"
+    depends_on:
+    - registrator
+    - consul
+    links:
+    - registrator
+    - consul
