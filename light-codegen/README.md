@@ -1,59 +1,21 @@
-# [swagger-codegen](https://github.com/networknt/light-docker/tree/master/swagger-codegen)
+# [light-codegen](https://github.com/networknt/light-codegen)
 
-Dockerfile for running Swagger Codegen.
+Dockerfile for running Light Codegen.
 
-This allows users to generate code without installing Java on the host machine. It is also 
-helpful if you can't, or don't want to, install Bash in your environment.
+This allows users to generate code without cloning/building light-codegenJava on 
+the host machine. It is also helpful if you can't, or don't want to, install Bash 
+in your environment.
 
-## Options
-
-Swagger Codegen CLI options are available:
-
-* generate
-* help
-* langs
-* meta
-* config-help
-
-The default is `help`.
-
-## Usage
-
-All options for the CLI are supported.
+To build docker image and push it to docker hub, you have to make sure that there
+is no existing image on your build server. If there are some older version of
+light-codegen, you need to remove them using 
 
 ```
-docker run -it networknt/swagger-codegen config-help -l light-java
+docker rmi -f imageId
 ```
 
-For full options details, see the [Swagger Codegen README](https://github.com/swagger-api/swagger-codegen).
-
-## Output Folder
-
-Mount a volume to `/swagger-api/out` for output.
-
-Example:
+And then run build.sh with a version number as the parameter.
 
 ```
-docker run -it -v ~/temp/swagger-generated:/swagger-api/out \
-    networknt/swagger-codegen generate \
-    -i /swagger-api/yaml/petstore-with-fake-endpoints-models-for-testing.yaml \
-    -l light-java \
-    -o /swagger-api/out/petstore
+./build.sh 1.3.4
 ```
-Your generated code will now be accessible under `~/temp/swagger-generated/petstore`.
-
-## Input Swagger Definition
-
-To read in a swagger definition from a local file, just map a volume to `/swagger-api/yaml`.
-
-Example:
-
-```
-docker run -it -v ~/temp/swagger-generated:/swagger-api/out \
-    -v ~/temp/swagger-definitions:/swagger-api/yaml \
-    networknt/swagger-codegen generate \
-    -i /swagger-api/yaml/twitter.yaml \
-    -l light-java \
-    -o /swagger-api/out/twitter
-```
-Your generated code will now be accessible under `~/temp/swagger-generated/twitter`.
