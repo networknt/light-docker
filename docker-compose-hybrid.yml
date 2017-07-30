@@ -1,0 +1,32 @@
+version: "2"
+#
+# Services
+#
+services:
+   command:
+      image: networknt/eventuate-hybridcommand
+      volumes:
+        - ./eventuate/command/config:/config
+        - ./eventuate/command/service:/service
+      ports:
+        - 8083:8083
+      networks:
+          - localnet
+
+   query:
+      image: networknt/eventuate-hybridquery
+      volumes:
+        - ./eventuate/query/config:/config
+        - ./eventuate/query/service:/service
+      ports:
+        - 8082:8082
+      networks:
+          - localnet
+
+
+# Networks
+#
+networks:
+  localnet:
+    # driver: bridge
+    external: true
