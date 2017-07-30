@@ -3,10 +3,10 @@ version: "2"
 # Services
 #
 services:
-   cdcservice:
-      image: networknt/cdcservice
+   cdcserver:
+      image: networknt/eventuate-cdcserver
       volumes:
-        - ./cdcservice/config:/config
+        - ./cdc-server/config:/config
       networks:
         - localnet
 
@@ -15,3 +15,4 @@ services:
 networks:
   localnet:
     external: true
+    
