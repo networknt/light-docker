@@ -4,7 +4,7 @@ version: "2"
 #
 services:
   mysql:
-     image: networknt/mysql:latest
+     image: networknt/eventuate-mysql:latest
      ports:
       - 3306:3306
      environment:
@@ -15,7 +15,7 @@ services:
       - localnet
 
   zookeeper:
-       image: networknt/zookeeper:latest
+       image: networknt/eventuate-zookeeper:latest
        ports:
           - 2181:2181
           - 2888:2888
@@ -23,7 +23,7 @@ services:
           - localnet
 
   kafka:
-       image: networknt/kafka:latest
+       image: networknt/eventuate-kafka:latest
        ports:
           - 9092:9092
        links:
