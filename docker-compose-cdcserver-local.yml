@@ -1,0 +1,17 @@
+version: "2"
+#
+# Services
+#
+services:
+   cdcserver:
+      build: ./cdc-server
+      volumes:
+        - ./cdc-server/config:/config
+      networks:
+        - localnet
+
+# Networks
+#
+networks:
+  localnet:
+    external: true
