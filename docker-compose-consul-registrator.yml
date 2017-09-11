@@ -12,6 +12,7 @@ services:
   registrator:
     image: gliderlabs/registrator:latest
     command: "consul://consul:8500"
+    network_mode: "host"
     depends_on:
     - consul
     links:
@@ -22,7 +23,7 @@ services:
   apia:
     image: networknt/com.networknt.apia-1.0.0
     ports:
-    - "7001:7001"
+    - "7441:7441"
     depends_on:
     - registrator
     - consul
@@ -34,7 +35,7 @@ services:
   apib:
     image: networknt/com.networknt.apib-1.0.0
     ports:
-    - "7002:7002"
+    - "7442:7442"
     depends_on:
     - registrator
     - consul
@@ -45,7 +46,7 @@ services:
   apic:
     image: networknt/com.networknt.apic-1.0.0
     ports:
-    - "7003:7003"
+    - "7443:7443"
     depends_on:
     - registrator
     - consul
@@ -56,7 +57,7 @@ services:
   apid:
     image: networknt/com.networknt.apid-1.0.0
     ports:
-    - "7004:7004"
+    - "7444:7444"
     depends_on:
     - registrator
     - consul
