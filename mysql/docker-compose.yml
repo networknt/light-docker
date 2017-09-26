@@ -1,0 +1,21 @@
+version: "2"
+#
+# Before running this docker compose, please update both passwords
+#
+services:
+  mysql:
+     image: networknt/mysql:latest
+     ports:
+      - 3306:3306
+     environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=mysqlpw
+     networks:
+      - localnet
+
+# Networks
+#
+networks:
+  localnet:
+    external: true

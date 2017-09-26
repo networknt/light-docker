@@ -1,7 +1,7 @@
 This is a docker image for mysql which is used for multiple places in side of
 infrastructure of light-*-4j frameworks and applications.
 
-Here is the customized features.
+## Databases
 
 ### enable replication
 
@@ -23,5 +23,19 @@ postfix.sql is used to create hardware/emailserver tables.
 ### todo db
 
 todo_db.sql is used to create todo_list example database tables.
+
+
+## Compose
+
+There is a docker-compose.yml file in the directory. Please update the passwords
+for root and mysqluser before running the compose to start mysql.
+
+```
+docker-compose up
+```
+
+## Console
+
+You can use mysql cli to connect to mysql database from your host.
 
  
