@@ -1,4 +1,7 @@
 
+/*
+eventuate db for light-eventuate-4j framework event store
+ */
 create database eventuate;
 GRANT ALL PRIVILEGES ON eventuate.* TO 'mysqluser'@'%' WITH GRANT OPTION;
 USE eventuate;
@@ -36,3 +39,15 @@ create table snapshots (
   triggering_events VARCHAR(1000),
   PRIMARY KEY(entity_type, entity_id, entity_version)
 );
+
+
+/*
+email database for hardware email server docker image
+ */
+
+
+
+/*
+eventuate example application query side db todolist
+ */
+
