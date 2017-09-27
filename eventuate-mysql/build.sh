@@ -2,7 +2,7 @@
 
 set -ex
 
-IMAGE_NAME="networknt/mysql"
+IMAGE_NAME="networknt/eventuate-mysql"
 TAG="${1}"
 
 if docker inspect ${IMAGE_NAME} &> /dev/null; then
