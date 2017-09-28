@@ -35,7 +35,12 @@ services:
        networks:
           - localnet
 
-
+  cdcserver:
+       image: networknt/eventuate-cdcserver
+       volumes:
+          - ./cdc-server/config:/config
+       networks:
+          - localnet
 
 # Networks
 #
