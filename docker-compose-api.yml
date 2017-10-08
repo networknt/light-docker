@@ -18,7 +18,7 @@ services:
       - localnet
 
   arango:
-    image: arangodb/arangodb: latest
+    image: arangodb/arangodb:latest
     restart: always
     volumes:
       - /opt/arangodb:/var/lib/arangodb
