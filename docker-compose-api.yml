@@ -102,10 +102,6 @@ services:
     restart: always
     command: "consul://consul:8500"
     network_mode: "host"
-    depends_on:
-    - consul
-    links:
-    - consul
     volumes:
     - /var/run/docker.sock:/tmp/docker.sock
 
