@@ -46,6 +46,16 @@ services:
     networks:
       - localnet
 
+  redis:
+    image: redis:4.0-alpine
+    container_name: redis
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - /opt/redis/db:/data
+    networks:
+      - localnet
+
   grafana:
     image: grafana/grafana:latest
     restart: always
