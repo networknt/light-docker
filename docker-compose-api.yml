@@ -17,6 +17,20 @@ services:
     networks:
       - localnet
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpw
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - 8080:80
+    links:
+      - mysql
+    networks:
+      - localnet
+
   arango:
     image: arangodb/arangodb:latest
     restart: always
