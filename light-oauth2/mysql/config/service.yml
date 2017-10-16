@@ -2,9 +2,9 @@
 singletons:
 - javax.sql.DataSource:
   - com.zaxxer.hikari.HikariDataSource:
-      jdbcUrl: jdbc:mysql://mysqldb:3306/oauth2?useSSL=false
-      username: root
-      password: my-secret-pw
+      jdbcUrl: jdbc:mysql://mysql:3306/oauth2?useSSL=false
+      username: mysqluser
+      password: mysqlpw
       maximumPoolSize: 15
       useServerPrepStmts: true
       cachePrepStmts: true

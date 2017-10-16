@@ -17,6 +17,20 @@ services:
     networks:
       - localnet
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpw
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - 8080:80
+    links:
+      - mysql
+    networks:
+      - localnet
+
   arango:
     image: arangodb/arangodb:latest
     restart: always
@@ -35,7 +49,6 @@ services:
     volumes:
       - /opt/influxdb:/var/lib/influxdb
     ports:
-      - 8083:8083
       - 8086:8086
     environment:
       - INFLUXDB_ADMIN_USER=root
@@ -43,6 +56,18 @@ services:
       - INFLUXDB_USER=metrics
       - INFLUXDB_USER_PASSWORD=secret
       - INFLUXDB_DB=metrics
+    networks:
+      - localnet
+
+  chronograf:
+    image: chronograf:1.3-alpine
+    restart: always
+    volumes:
+      - /opt/chronograf:/var/lib/chronograf
+    ports:
+      - 8888:8888
+    links:
+      - influxdb
     networks:
       - localnet
 
@@ -105,16 +130,18 @@ services:
     restart: always
     command: "agent -server -data-dir /tmp/consul -bootstrap -ui -client=0.0.0.0"
     ports:
-    - 8500:8500
-    - 8400:8400
+      - 8500:8500
+      - 8400:8400
 
-  registrator:
-    image: gliderlabs/registrator:latest
-    restart: always
-    command: "consul://consul:8500"
-    network_mode: "host"
-    volumes:
-    - /var/run/docker.sock:/tmp/docker.sock
+  # registrator:
+    # image: gliderlabs/registrator:latest
+    # restart: always
+    # command: "consul://consul:8500"
+    # network_mode: "host"
+    # volumes:
+      # - /var/run/docker.sock:/tmp/docker.sock
+    # links:
+      # - consul
 
   oauth2-code:
     image: networknt/oauth2-code
