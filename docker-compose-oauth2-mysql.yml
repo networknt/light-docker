@@ -1,6 +1,6 @@
   version: '2'
   services:
-    mysql:
+    mysqldb:
       image: mysql:5.7.16
       volumes:
         - ./light-oauth2/mysql:/docker-entrypoint-initdb.d
@@ -8,8 +8,8 @@
         - localnet
       environment:
         MYSQL_ROOT_PASSWORD: rootpassword
-      - MYSQL_USER=mysqluser
-      - MYSQL_PASSWORD=mysqlpw
+        MYSQL_USER: mysqluser
+        MYSQL_PASSWORD: mysqlpw
     oauth2-code:
       image: networknt/oauth2-code
       ports:
