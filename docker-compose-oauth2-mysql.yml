@@ -15,7 +15,7 @@
       ports:
         - "6881:6881"
       volumes:
-        - ./light-oauth2/mysql/config:/config
+        - ./light-oauth2/mysql/config/oauth2-code:/config
       networks:
         - localnet
       depends_on:
@@ -33,7 +33,7 @@
       ports:
         - "6882:6882"
       volumes:
-        - ./light-oauth2/mysql/config:/config
+        - ./light-oauth2/mysql/config/oauth2-token:/config
       networks:
         - localnet
       depends_on:
@@ -51,7 +51,7 @@
       ports:
         - "6883:6883"
       volumes:
-        - ./light-oauth2/mysql/config:/config
+        - ./light-oauth2/mysql/config/oauth2-service:/config
       networks:
         - localnet
       depends_on:
@@ -69,7 +69,7 @@
       ports:
         - "6884:6884"
       volumes:
-        - ./light-oauth2/mysql/config:/config
+        - ./light-oauth2/mysql/config/oauth2-client:/config
       networks:
         - localnet
       depends_on:
@@ -87,7 +87,7 @@
       ports:
         - "6885:6885"
       volumes:
-        - ./light-oauth2/mysql/config:/config
+        - ./light-oauth2/mysql/config/oauth2-user:/config
       networks:
         - localnet
       depends_on:
@@ -105,7 +105,7 @@
       ports:
         - "6886:6886"
       volumes:
-        - ./light-oauth2/mysql/config:/config
+        - ./light-oauth2/mysql/config/oauth2-key:/config
       networks:
         - localnet
       depends_on:
@@ -123,7 +123,7 @@
       ports:
         - "6887:6887"
       volumes:
-        - ./light-oauth2/mysql/config:/config
+        - ./light-oauth2/mysql/config/oauth2-refresh-token:/config
       networks:
         - localnet
       depends_on:
