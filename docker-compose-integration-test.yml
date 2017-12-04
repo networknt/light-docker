@@ -12,49 +12,49 @@
 #
 services:
   mysql:
-     image: networknt/mysql:latest
-     ports:
+    image: networknt/mysql:latest
+    ports:
       - 3306:3306
-     environment:
+    environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
-     networks:
+    networks:
       - localnet
 
   zookeeper:
-       image: networknt/zookeeper:latest
-       ports:
-          - 2181:2181
-          - 2888:2888
-       networks:
-          - localnet
+    image: networknt/zookeeper:latest
+    ports:
+      - 2181:2181
+      - 2888:2888
+    networks:
+      - localnet
 
   kafka:
-       image: networknt/kafka:latest
-       ports:
-          - 9092:9092
-       links:
-          - zookeeper
-       environment:
-          - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
-          - KAFKA_HEAP_OPTS=-Xmx320m -Xms320m
-          - ZOOKEEPER_SERVERS=zookeeper:2181
-       networks:
-          - localnet
+    image: networknt/kafka:latest
+    ports:
+      - 9092:9092
+    links:
+      - zookeeper
+    environment:
+      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
+      - KAFKA_HEAP_OPTS=-Xmx320m -Xms320m
+      - ZOOKEEPER_SERVERS=zookeeper:2181
+    networks:
+      - localnet
 
   eventuate-cdcserver:
-       image: networknt/eventuate-cdcserver:latest
-       volumes:
-          - ./eventuate-cdcserver/config:/config
-       networks:
-          - localnet
+    image: networknt/eventuate-cdcserver:latest
+    volumes:
+      - ./eventuate-cdcserver/config:/config
+    networks:
+      - localnet
   redis:
-       image: redis
-       ports:
-          - 6379:6379
-       network:
-          - localnet
+    image: redis
+    ports:
+      - 6379:6379
+    network:
+      - localnet
 
 # Networks
 #
