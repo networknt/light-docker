@@ -4,7 +4,7 @@ version: "2"
 #
 services:
   mysql:
-     image: networknt/eventuate-mysql:latest
+     image: networknt/mysql:latest
      ports:
       - 3306:3306
      environment:
@@ -15,7 +15,7 @@ services:
       - localnet
 
   zookeeper:
-       image: networknt/eventuate-zookeeper:latest
+       image: networknt/zookeeper:latest
        ports:
           - 2181:2181
           - 2888:2888
@@ -23,7 +23,7 @@ services:
           - localnet
 
   kafka:
-       image: networknt/eventuate-kafka:latest
+       image: networknt/kafka:latest
        ports:
           - 9092:9092
        links:
@@ -35,10 +35,10 @@ services:
        networks:
           - localnet
 
-  cdcserver:
-       image: networknt/eventuate-cdcserver
+  eventuate-cdcserver:
+       image: networknt/eventuate-cdcserver:latest
        volumes:
-          - ./cdc-server/config:/config
+          - ./eventuate-cdcserver/config:/config
        networks:
           - localnet
 

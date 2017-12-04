@@ -1,9 +1,8 @@
-
 #!/bin/bash
 
 set -ex
 
-IMAGE_NAME="networknt/eventuate-kafka"
+IMAGE_NAME="networknt/mysql"
 TAG="${1}"
 
 if docker inspect ${IMAGE_NAME} &> /dev/null; then

@@ -4,7 +4,9 @@ eventuate db for light-eventuate-4j framework event store
  */
 create database eventuate;
 GRANT ALL PRIVILEGES ON eventuate.* TO 'mysqluser'@'%' WITH GRANT OPTION;
+
 USE eventuate;
+
 DROP table IF EXISTS events;
 DROP table IF EXISTS  entities;
 DROP table IF EXISTS  snapshots;
@@ -16,10 +18,12 @@ create table events (
   entity_type VARCHAR(1000) NOT NULL,
   entity_id VARCHAR(1000) NOT NULL,
   triggering_event VARCHAR(1000),
-  metadata VARCHAR(1000)
+  metadata VARCHAR(1000),
+  published TINYINT DEFAULT 0
 );
 
 CREATE INDEX events_idx ON events(entity_type, entity_id, event_id);
+CREATE INDEX events_published_idx ON events(published, event_id);
 
 create table entities (
   entity_type VARCHAR(1000),
@@ -39,15 +43,3 @@ create table snapshots (
   triggering_events VARCHAR(1000),
   PRIMARY KEY(entity_type, entity_id, entity_version)
 );
-
-
-/*
-email database for hardware email server docker image
- */
-
-
-
-/*
-eventuate example application query side db todolist
- */
-
