@@ -1,6 +1,13 @@
 version: "2"
 #
-# Services
+# As Kafka needs your docker host name or IP, we have to set it in
+# environment variable before starting this compose. Note that on
+# Linux, you cannot use "./set-docker-host-ip.sh" as the variable
+# is set for the child shell and the parent shell doesn't have it.
+#
+# You should use source instead of running it with another shell.
+#
+# source set-docker-host-ip.sh
 #
 services:
   mysql:
