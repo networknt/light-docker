@@ -1,0 +1,17 @@
+version: "2"
+#
+# Services
+#
+services:
+  eventuate-cdcserver:
+    image: networknt/eventuate-cdcserver:latest
+    volumes:
+      - ./eventuate-cdcserver/config:/config
+    networks:
+      - localnet
+
+# Networks
+#
+networks:
+  localnet:
+    external: true
