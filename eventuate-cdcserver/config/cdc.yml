@@ -11,3 +11,5 @@ sourceTableName: EVENTS
 maximumPoolSize: 10
 kafka: kafka:9092
 zookeeper: zookeeper:2181
+leadershipLockPath: /eventuatelocal/cdc/leader
+mySqlBinLogClientName: MySqlBinLog

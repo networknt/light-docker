@@ -2,7 +2,7 @@
 
 set -ex
 
-IMAGE_NAME="networknt/eventuate-zookeeper"
+IMAGE_NAME="networknt/zookeeper"
 TAG="${1}"
 
 if docker inspect ${IMAGE_NAME} &> /dev/null; then
