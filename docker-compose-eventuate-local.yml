@@ -4,7 +4,7 @@ version: "2"
 #
 services:
   mysql:
-       build: ./eventuate-mysql/
+       build: ./mysql/
        ports:
            - 3306:3306
        environment:
@@ -15,7 +15,7 @@ services:
            - localnet
 
   zookeeper:
-       build: ./eventuate-zookeeper/
+       build: ./zookeeper/
        ports:
           - 2181:2181
           - 2888:2888
@@ -23,7 +23,7 @@ services:
           - localnet
 
   kafka:
-       build: ./eventuate-kafka/
+       build: ./kafka/
        ports:
           - 9092:9092
        links:
