@@ -97,14 +97,14 @@ CREATE TABLE aggregate_instance_subscriptions(
 );
 
 create table saga_lock_table(
-  target VARCHAR(100),
+  target VARCHAR(100) NOT NULL,
   saga_type VARCHAR(100) NOT NULL,
   saga_Id VARCHAR(100) NOT NULL,
   PRIMARY KEY(target)
 );
 
 create table saga_stash_table(
-  message_id VARCHAR(100),
+  message_id VARCHAR(100) NOT NULL,
   target VARCHAR(100) NOT NULL,
   saga_type VARCHAR(100) NOT NULL,
   saga_id VARCHAR(100) NOT NULL,
