@@ -1,0 +1,42 @@
+#
+# docker-compose-oracle.yml
+#
+# Docker compose file for Oracle to support OAUTH and API/microservice
+# reference training
+#
+# Key Considerations:
+# - oracle service is on a single external bridge network
+#
+# Author: Dan Dobrin
+#
+
+#
+# **** NOTE:  any volumes must be defined relative to this file
+#
+
+version: '2'
+
+#
+# Services
+#
+services:
+
+    #
+    # Oracle database
+    #
+    oracle:
+        image: wnameless/oracle-xe-11g:16.04
+        volumes:
+            - ./racoracle/config:/docker-entrypoint-initdb.d
+        ports:
+            - "1521:1521"
+        networks:
+            - localnet
+
+#
+# Networks
+#
+networks:
+    localnet:
+        # driver: bridge
+        external: true
