@@ -1,0 +1,17 @@
+version: "2"
+#
+# Services
+#
+services:
+  eventuate-oracle-cdcserver:
+    build: ./eventuate-oracle-cdcserver
+    volumes:
+      - ./eventuate-oracle-cdcserver/config:/config
+    networks:
+      - localnet
+
+# Networks
+#
+networks:
+  localnet:
+    external: true
