@@ -6,4 +6,4 @@ leadershipLockPath: /eventuatelocal/cdc/leader
 maxEventsPerPolling: 20
 maxAttemptsForPolling: 5
 pollingRetryIntervalInMilliseconds: 200
-pollingIntervalInMilliseconds: 500
+pollingIntervalInMillisecond000
