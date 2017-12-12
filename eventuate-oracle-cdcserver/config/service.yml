@@ -3,7 +3,7 @@ singletons:
 - javax.sql.DataSource:
   - com.zaxxer.hikari.HikariDataSource:
       DriverClassName: oracle.jdbc.pool.OracleDataSource
-      jdbcUrl: jdbc:oracle:thin:@10.200.10.1:1521:XE
+      jdbcUrl: jdbc:oracle:thin:@oracle:1521:XE
       username: SYSTEM
       password: oracle
       maximumPoolSize: 10
