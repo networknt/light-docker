@@ -1,3 +1,4 @@
+version: "2"
 # This is a compose file that start all depending services for mvn clean install
 # in light-bot/bot-cli to build everything in develop branch.
 #
@@ -65,7 +66,7 @@ services:
     image: redis
     ports:
       - 6379:6379
-    network:
+    networks:
       - localnet
 
 # Networks
