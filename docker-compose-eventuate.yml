@@ -8,6 +8,9 @@ version: "2"
 # You should use source instead of running it with another shell.
 #
 # source set-docker-host-ip.sh
+# If the hostname returned cannot be pinged, then you need to find out the IP
+# manually with ifconfig and export it.
+# for more info, please refer to https://doc.networknt.com/tutorial/eventuate/getting-started/
 #
 services:
   mysql:
