@@ -15,6 +15,10 @@ version: "2"
 # manually with ifconfig and export it.
 # for more info, please refer to https://doc.networknt.com/tutorial/eventuate/getting-started/
 #
+# Somehow, we cannot start the tram-cdcserver in the same compose. It needs to be started
+# after the integration-test is up and running. Also, we don't need eventuate-cdcserver
+# for integration test.
+#
 services:
   mysql:
     image: networknt/mysql:latest
@@ -48,19 +52,19 @@ services:
     networks:
       - localnet
 
-  eventuate-cdcserver:
-    image: networknt/eventuate-cdcserver:latest
-    volumes:
-      - ./eventuate-cdcserver/config:/config
-    networks:
-      - localnet
+  # eventuate-cdcserver:
+    # image: networknt/eventuate-cdcserver:latest
+    # volumes:
+      # - ./eventuate-cdcserver/config:/config
+    # networks:
+      # - localnet
 
-  tram-cdcserver:
-    image: networknt/tram-cdcserver:latest
-    volumes:
-      - ./tram-cdcserver/config:/config
-    networks:
-      - localnet
+  # tram-cdcserver:
+    # image: networknt/tram-cdcserver:latest
+    # volumes:
+      # - ./tram-cdcserver/config:/config
+    # networks:
+      # - localnet
 
   redis:
     image: redis
