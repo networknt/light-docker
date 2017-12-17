@@ -1,0 +1,19 @@
+version: "2"
+#
+# Services
+#
+services:
+  openapi-proxy:
+    image: networknt/light-proxy:latest
+    ports:
+      - 8080:8080
+    volumes:
+      - ./light-proxy/openapi/config:/config
+    networks:
+      - localnet
+
+# Networks
+#
+networks:
+  localnet:
+    external: true
