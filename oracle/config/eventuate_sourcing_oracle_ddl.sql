@@ -46,7 +46,83 @@ create table EVENTUATE.snapshots (
   PRIMARY KEY(entity_type, entity_id, entity_version)
 );
 
+CREATE TABLE EVENTUATE.message (
+  ID VARCHAR(120) PRIMARY KEY,
+  DESTINATION VARCHAR(1000) NOT NULL,
+  HEADERS VARCHAR(1000) NOT NULL,
+  PAYLOAD VARCHAR(1000) NOT NULL,
+  PUBLISHED INT DEFAULT 0
+);
+
+CREATE TABLE EVENTUATE.received_messages (
+  CONSUMER_ID VARCHAR(120),
+  MESSAGE_ID VARCHAR(120),
+  PRIMARY KEY(CONSUMER_ID, MESSAGE_ID)
+);
+
+CREATE TABLE EVENTUATE.saga_instance(
+  saga_type VARCHAR(100) NOT NULL,
+  saga_id VARCHAR(100) NOT NULL,
+  state_name VARCHAR(100) NOT NULL,
+  last_request_id VARCHAR(100),
+  saga_data_type VARCHAR(1000) NOT NULL,
+  saga_data_json VARCHAR(1000) NOT NULL,
+  PRIMARY KEY(saga_type, saga_id)
+);
+
+
+CREATE TABLE EVENTUATE.saga_instance_participants (
+  saga_type VARCHAR(100) NOT NULL,
+  saga_id VARCHAR(100) NOT NULL,
+  destination VARCHAR(100) NOT NULL,
+  resource VARCHAR(100) NOT NULL,
+  PRIMARY KEY(saga_type, saga_id, destination, resource)
+);
+
+CREATE TABLE EVENTUATE.aggregate_instance_subscriptions(
+  aggregate_type VARCHAR(100) DEFAULT NULL,
+  aggregate_id VARCHAR(100) NOT NULL,
+  event_type VARCHAR(100) NOT NULL,
+  saga_id VARCHAR(100) NOT NULL,
+  saga_type VARCHAR(100) NOT NULL,
+  PRIMARY KEY(aggregate_id, event_type, saga_id, saga_type)
+);
+
+create table EVENTUATE.saga_lock_table(
+  target VARCHAR(100) NOT NULL,
+  saga_type VARCHAR(100) NOT NULL,
+  saga_Id VARCHAR(100) NOT NULL,
+  PRIMARY KEY(target)
+);
+
+create table EVENTUATE.saga_stash_table(
+  message_id VARCHAR(100) NOT NULL,
+  target VARCHAR(100) NOT NULL,
+  saga_type VARCHAR(100) NOT NULL,
+  saga_id VARCHAR(100) NOT NULL,
+  message_headers VARCHAR(1000) NOT NULL,
+  message_payload VARCHAR(1000) NOT NULL,
+  PRIMARY KEY(message_id)
+  );
+
+create table EVENTUATE.saga_enlisted_aggregates(
+  saga_id VARCHAR(100) NOT NULL,
+  aggregate_id VARCHAR(100) NOT NULL,
+  aggregate_type VARCHAR(100) DEFAULT NULL,
+  PRIMARY KEY(aggregate_id,  saga_id)
+  );
+
 
 CREATE SYNONYM snapshots FOR EVENTUATE.snapshots;
 CREATE SYNONYM entities FOR EVENTUATE.entities;
 CREATE SYNONYM events FOR EVENTUATE.events;
+
+CREATE SYNONYM message FOR EVENTUATE.message;
+CREATE SYNONYM received_messages FOR EVENTUATE.received_messages;
+
+CREATE SYNONYM saga_instance FOR EVENTUATE.saga_instance;
+CREATE SYNONYM saga_instance_participants FOR EVENTUATE.saga_instance_participants;
+CREATE SYNONYM aggregate_instance_subscriptions FOR EVENTUATE.aggregate_instance_subscriptions;
+CREATE SYNONYM saga_lock_table FOR EVENTUATE.saga_lock_table;
+CREATE SYNONYM saga_stash_table FOR EVENTUATE.saga_stash_table;
+CREATE SYNONYM saga_enlisted_aggregates FOR EVENTUATE.saga_enlisted_aggregates;
