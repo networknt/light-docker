@@ -1,0 +1,19 @@
+version: "2"
+#
+# Services
+#
+services:
+  swagger-proxy:
+    image: networknt/light-proxy:latest
+    ports:
+      - 8080:8080
+    volumes:
+      - ./light-proxy/swagger/config:/config
+    networks:
+      - localnet
+
+# Networks
+#
+networks:
+  localnet:
+    external: true
