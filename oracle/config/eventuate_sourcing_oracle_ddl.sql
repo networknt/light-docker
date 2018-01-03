@@ -75,11 +75,11 @@ CREATE TABLE EVENTUATE.saga_instance_participants (
   saga_type VARCHAR(100) NOT NULL,
   saga_id VARCHAR(100) NOT NULL,
   destination VARCHAR(100) NOT NULL,
-  resource VARCHAR(100) NOT NULL,
-  PRIMARY KEY(saga_type, saga_id, destination, resource)
+  resource_name VARCHAR(100) NOT NULL,
+  PRIMARY KEY(saga_type, saga_id, destination, resource_name)
 );
 
-CREATE TABLE EVENTUATE.aggregate_instance_subscriptions(
+CREATE TABLE EVENTUATE.aggregate_instance_desc(
   aggregate_type VARCHAR(100) DEFAULT NULL,
   aggregate_id VARCHAR(100) NOT NULL,
   event_type VARCHAR(100) NOT NULL,
@@ -113,16 +113,16 @@ create table EVENTUATE.saga_enlisted_aggregates(
   );
 
 
-CREATE SYNONYM snapshots FOR EVENTUATE.snapshots;
-CREATE SYNONYM entities FOR EVENTUATE.entities;
-CREATE SYNONYM events FOR EVENTUATE.events;
+CREATE OR REPLACE  SYNONYM SYSTEM.snapshots FOR EVENTUATE.snapshots;
+CREATE OR REPLACE  SYNONYM SYSTEM.entities FOR EVENTUATE.entities;
+CREATE OR REPLACE  SYNONYM SYSTEM.events FOR EVENTUATE.events;
 
-CREATE SYNONYM message FOR EVENTUATE.message;
-CREATE SYNONYM received_messages FOR EVENTUATE.received_messages;
+CREATE OR REPLACE  SYNONYM message FOR EVENTUATE.message;
+CREATE OR REPLACE  SYNONYM received_messages FOR EVENTUATE.received_messages;
 
-CREATE SYNONYM saga_instance FOR EVENTUATE.saga_instance;
-CREATE SYNONYM saga_instance_participants FOR EVENTUATE.saga_instance_participants;
-CREATE SYNONYM aggregate_instance_subscriptions FOR EVENTUATE.aggregate_instance_subscriptions;
-CREATE SYNONYM saga_lock_table FOR EVENTUATE.saga_lock_table;
-CREATE SYNONYM saga_stash_table FOR EVENTUATE.saga_stash_table;
-CREATE SYNONYM saga_enlisted_aggregates FOR EVENTUATE.saga_enlisted_aggregates;
+CREATE OR REPLACE  SYNONYM saga_instance FOR EVENTUATE.saga_instance;
+CREATE OR REPLACE  SYNONYM saga_instance_participants FOR EVENTUATE.saga_instance_participants;
+CREATE OR REPLACE  SYNONYM aggregate_instance_desc FOR EVENTUATE.aggregate_instance_desc;
+CREATE OR REPLACE  SYNONYM saga_lock_table FOR EVENTUATE.saga_lock_table;
+CREATE OR REPLACE  SYNONYM saga_stash_table FOR EVENTUATE.saga_stash_table;
+CREATE OR REPLACE  SYNONYM saga_enlisted_aggregates FOR EVENTUATE.saga_enlisted_aggregates;
