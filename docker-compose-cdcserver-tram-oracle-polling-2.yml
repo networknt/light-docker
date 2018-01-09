@@ -1,0 +1,17 @@
+version: "2"
+#
+# Services
+#
+services:
+  tram-oracle-cdcserver:
+    build: ./tram-oracle-cdcserver
+    volumes:
+      - ./tram-oracle-cdcserver/config2:/config
+    networks:
+      - localnet
+
+# Networks
+#
+networks:
+  localnet:
+    external: true
