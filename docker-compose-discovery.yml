@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+  apia:
+    image: networknt/com.networknt.apia-1.0.0
+    ports:
+    - "7441:7441"
+    networks:
+    - localnet
+
+  apib:
+    image: networknt/com.networknt.apib-1.0.0
+    ports:
+    - "7442:7442"
+    networks:
+    - localnet
+
+  apic:
+    image: networknt/com.networknt.apic-1.0.0
+    ports:
+    - "7443:7443"
+    networks:
+    - localnet
+
+  apid:
+    image: networknt/com.networknt.apid-1.0.0
+    ports:
+    - "7444:7444"
+    networks:
+    - localnet
+networks:
+  localnet:
+    # driver: bridge
+    external: true
