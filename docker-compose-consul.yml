@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+
+  consul:
+    image:  gliderlabs/consul:latest
+    command: "agent -server -data-dir /tmp/consul -bootstrap -ui -client=0.0.0.0"
+    container_name: consul
+    networks:
+      - localnet
+    ports:
+    - 8500:8500
+    - 8400:8400
+
+#
+# Networks
+#
+networks:
+    localnet:
+        # driver: bridge
+        external: true

@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+
+  registrator:
+    image: gliderlabs/registrator:latest
+    command: "-tags=\"test1\" --deregister=always consul://127.0.0.1:8500"
+    container_name: registrator
+    network_mode: "host"
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
