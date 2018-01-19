@@ -5,6 +5,7 @@ GRANT ALL PRIVILEGES ON customerorder.* TO 'mysqluser'@'%' WITH GRANT OPTION;
 use customerorder;
 
 DROP table IF EXISTS  customer;
+DROP table IF EXISTS  customer_order;
 DROP table IF EXISTS  order_detail;
 
 
@@ -14,6 +15,13 @@ CREATE  TABLE customer (
   creditLimit numeric
 );
 
+CREATE  TABLE customer_order (
+  customer_id long,
+  order_id long,
+  orderTotal numeric
+);
+
+
 CREATE  TABLE order_detail (
   order_id long ,
   customer_id long,
@@ -21,3 +29,4 @@ CREATE  TABLE order_detail (
   amount numeric
 
 );
+
