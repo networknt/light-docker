@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+
+  prometheus:
+    build: ./prometheus/
+    networks:
+      - localnet
+    ports:
+    - 9090:9090
+
+#
+# Networks
+#
+networks:
+    localnet:
+        # driver: bridge
+        external: true
