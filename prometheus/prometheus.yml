@@ -21,6 +21,26 @@ rule_files:
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'prometheus'
+    scrape_interval: 5s
+    consul_sd_configs:
+      - server: 'localhost:8500'
+        services:
+          - 'multimodule_tram-todolist-command-service'
+          - 'multimodule_tram-todolist-view-service'
+
+    relabel_configs:
+      - source_labels: ['__meta_consul_service']
+        regex:         '(.*)'
+        target_label:  'service'
+        replacement:   '$1'
+      - source_labels: ['__meta_consul_tags']
+        target_label: 'slave_name'
+        regex: '.*slave_name=([^,]*).*'
+        replacement: '${1}'
+      - source_labels: ['__meta_consul_tags']
+        target_label: 'public_hostname'
+        regex: '.*public_hostname=([^,]*).*'
+        replacement: '${1}'
 
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
