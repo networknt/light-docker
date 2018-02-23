@@ -21,13 +21,12 @@ rule_files:
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'services'
-    scrape_interval: 5s
+    scrape_interval: 15s
     consul_sd_configs:
       - server: 'consul:8500'
         services:
           - 'multimodule_tram-todolist-command-service'
           - 'multimodule_tram-todolist-view-service'
-          - 'lightdocker_kafka'
 
     relabel_configs:
       - source_labels: ['__meta_consul_service']
@@ -43,7 +42,7 @@ scrape_configs:
         regex: '.*public_hostname=([^,]*).*'
         replacement: '${1}'
 
-    metrics_path: /v1/metrics
+    metrics_path: /v1/prometheus
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
 
