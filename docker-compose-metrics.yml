@@ -15,7 +15,7 @@ services:
       - localnet
 
   grafana:
-    build: grafana/
+    image: grafana/grafana:4.6.3
     ports:
       - "3000:3000"
     links:
