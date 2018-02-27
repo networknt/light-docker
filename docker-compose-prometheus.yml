@@ -9,6 +9,16 @@ services:
     ports:
     - 9090:9090
 
+
+  grafana:
+    image: grafana/grafana:4.6.3
+    ports:
+      - "3000:3000"
+    links:
+      - prometheus
+    networks:
+      - localnet
+
 #
 # Networks
 #
