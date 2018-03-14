@@ -19,7 +19,7 @@ CREATE TABLE client (
   client_secret VARCHAR(1024) NOT NULL,
   client_name VARCHAR(32) NOT NULL,
   client_desc VARCHAR(2048),
-  scope VARCHAR(1024),
+  scope VARCHAR(4000),
   custom_claim VARCHAR(4000), -- custom claim(s) in json format that will be included in the jwt token
   redirect_uri VARCHAR(1024),
   authenticate_class VARCHAR(256),
