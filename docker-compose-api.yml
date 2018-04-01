@@ -4,7 +4,7 @@ version: "2"
 #
 services:
   mysql:
-    image: networknt/eventuate-mysql:latest
+    image: networknt/mysql:latest
     restart: always
     volumes:
       - /opt/mysql:/var/lib/mysql
@@ -35,11 +35,11 @@ services:
     image: arangodb/arangodb:latest
     restart: always
     volumes:
-      - /opt/arangodb:/var/lib/arangodb
+      - /opt/arangodb3:/var/lib/arangodb3
     ports:
       - 8529:8529
     environment:
-      - ARANGO_RANDOM_ROOT_PASSWORD=openSesame
+      - ARANGO_ROOT_PASSWORD=openSesame
     networks:
       - localnet
 
@@ -94,8 +94,39 @@ services:
     networks:
       - localnet
 
+  elasticsearch:
+    build: elasticsearch/
+    restart: always
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    networks:
+      - localnet
+  logstash:
+    build: logstash/
+    restart: always
+    command: -f /etc/logstash/conf.d/
+    volumes:
+      - ./logstash/config:/etc/logstash/conf.d
+    ports:
+      - 5000:5000
+    networks:
+      - localnet
+  kibana:
+    build: kibana/
+    restart: always
+    volumes:
+      - ./kibana/config/:/opt/kibana/config/
+    ports:
+      - 5601:5601
+    networks:
+      - localnet
+
   zookeeper:
-    image: networknt/eventuate-zookeeper:latest
+    image: networknt/zookeeper:latest
     restart: always
     ports:
       - 2181:2181
@@ -104,7 +135,7 @@ services:
       - localnet
 
   kafka:
-    image: networknt/eventuate-kafka:latest
+    image: networknt/kafka:latest
     restart: always
     ports:
       - 9092:9092
@@ -117,14 +148,6 @@ services:
     networks:
       - localnet
 
-  cdcserver:
-    image: networknt/eventuate-cdcserver:latest
-    restart: always
-    volumes:
-      - ./cdc-server/config:/config
-    networks:
-      - localnet
-
   consul:
     image:  gliderlabs/consul:latest
     restart: always
@@ -133,15 +156,21 @@ services:
       - 8500:8500
       - 8400:8400
 
-  # registrator:
-    # image: gliderlabs/registrator:latest
-    # restart: always
-    # command: "consul://consul:8500"
-    # network_mode: "host"
-    # volumes:
-      # - /var/run/docker.sock:/tmp/docker.sock
-    # links:
-      # - consul
+  cdcserver-eventuate:
+    image: networknt/eventuate-cdcserver:latest
+    restart: always
+    volumes:
+      - ./eventuate-cdcserver/config:/config
+    networks:
+      - localnet
+
+  cdcserver-tram:
+    image: networknt/tram-cdcserver:latest
+    restart: always
+    volumes:
+      - ./tram-cdcserver/config:/config
+    networks:
+      - localnet
 
   oauth2-code:
     image: networknt/oauth2-code
@@ -149,7 +178,7 @@ services:
     ports:
       - "6881:6881"
     volumes:
-      - ./light-oauth2/mysql/config:/config
+      - ./light-oauth2/mysql/config/oauth2-code:/config
     networks:
       - localnet
     depends_on:
@@ -168,7 +197,7 @@ services:
     ports:
       - "6882:6882"
     volumes:
-      - ./light-oauth2/mysql/config:/config
+      - ./light-oauth2/mysql/config/oauth2-token:/config
     networks:
       - localnet
     depends_on:
@@ -187,7 +216,7 @@ services:
     ports:
       - "6883:6883"
     volumes:
-      - ./light-oauth2/mysql/config:/config
+      - ./light-oauth2/mysql/config/oauth2-service:/config
     networks:
       - localnet
     depends_on:
@@ -206,7 +235,7 @@ services:
     ports:
       - "6884:6884"
     volumes:
-      - ./light-oauth2/mysql/config:/config
+      - ./light-oauth2/mysql/config/oauth2-client:/config
     networks:
       - localnet
     depends_on:
@@ -225,7 +254,7 @@ services:
     ports:
       - "6885:6885"
     volumes:
-      - ./light-oauth2/mysql/config:/config
+      - ./light-oauth2/mysql/config/oauth2-user:/config
     networks:
       - localnet
     depends_on:
@@ -244,7 +273,7 @@ services:
     ports:
       - "6886:6886"
     volumes:
-      - ./light-oauth2/mysql/config:/config
+      - ./light-oauth2/mysql/config/oauth2-key:/config
     networks:
       - localnet
     depends_on:
@@ -263,7 +292,7 @@ services:
     ports:
       - "6887:6887"
     volumes:
-      - ./light-oauth2/mysql/config:/config
+      - ./light-oauth2/mysql/config/oauth2-refresh-token:/config
     networks:
       - localnet
     depends_on:
@@ -276,6 +305,20 @@ services:
     #    gelf-address: "udp://localhost:12201"
     #    tag: "oauth2-refresh-token"
     #    env: "dev"
+
+  tokenization:
+    image: networknt/tokenization-1.0.0
+    restart: always
+    ports:
+      - "6888:6888"
+    volumes:
+      - ./tokenization:/config
+    networks:
+      - localnet
+    depends_on:
+      - mysql
+    links:
+      - mysql
 
 # Networks
 #

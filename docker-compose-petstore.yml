@@ -4,7 +4,7 @@ version: "2"
 #
 services:
   mysql:
-    image: networknt/eventuate-mysql:latest
+    image: networknt/mysql:latest
     restart: always
     volumes:
       - /opt/mysql:/var/lib/mysql
