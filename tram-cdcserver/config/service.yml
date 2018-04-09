@@ -11,21 +11,21 @@ singletons:
       cacheCallableStmts: true
       prepStmtCacheSize: 4096
       prepStmtCacheSqlLimit: 2048
-- com.networknt.eventuate.jdbc.EventuateSchema: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::eventuateSchema
-- com.networknt.eventuate.cdc.mysql.binlog.SourceTableNameSupplier: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::sourceTableNameSupplier
+- com.networknt.eventuate.jdbc.EventuateSchema: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::eventuateSchema
+- com.networknt.eventuate.cdc.mysql.binlog.SourceTableNameSupplier: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::sourceTableNameSupplier
 - com.networknt.eventuate.jdbc.EventuateJdbcAccess:
   - com.networknt.eventuate.server.jdbckafkastore.EventuateLocalJdbcAccess
-- com.networknt.eventuate.cdc.mysql.binlog.IWriteRowsEventDataParser: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::eventDataParser
-- com.networknt.eventuate.cdc.mysql.binlog.MySqlBinaryLogClient: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::mySqlBinaryLogClient
-- com.networknt.eventuate.kafka.producer.EventuateKafkaProducer: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::eventuateKafkaProducer
-- com.networknt.eventuate.cdc.mysql.binlog.DatabaseBinlogOffsetKafkaStore: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::binlogOffsetKafkaStore
-- com.networknt.eventuate.cdc.mysql.binlog.DebeziumBinlogOffsetKafkaStore: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::debeziumBinlogOffsetKafkaStore
+- com.networknt.eventuate.cdc.mysql.binlog.IWriteRowsEventDataParser: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::eventDataParser
+- com.networknt.eventuate.cdc.mysql.binlog.MySqlBinaryLogClient: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::mySqlBinaryLogClient
+- com.networknt.eventuate.kafka.producer.EventuateKafkaProducer: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::eventuateKafkaProducer
+- com.networknt.eventuate.cdc.mysql.binlog.DatabaseBinlogOffsetKafkaStore: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::binlogOffsetKafkaStore
+- com.networknt.eventuate.cdc.mysql.binlog.DebeziumBinlogOffsetKafkaStore: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::debeziumBinlogOffsetKafkaStore
 - com.networknt.eventuate.server.common.PublishingStrategy:
-  - com.networknt.eventuate.server.common.PublishedEventPublishingStrategy
-- com.networknt.eventuate.server.common.CdcProcessor: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::mySQLCdcProcessor
-- com.networknt.eventuate.server.common.CdcKafkaPublisher: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::mySQLCdcKafkaPublisher
-- org.apache.curator.framework.CuratorFramework: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::curatorFramework
-- com.networknt.eventuate.server.common.EventTableChangesToAggregateTopicTranslator: com.networknt.eventuate.cdc.mysql.binlog.MySqlCdcServiceInitializer::mySqlEventTableChangesToAggregateTopicTranslator
+  - com.networknt.tram.cdc.mysql.connector.MessageWithDestinationPublishingStrategy
+- com.networknt.eventuate.server.common.CdcProcessor: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::mySQLCdcProcessor
+- com.networknt.eventuate.server.common.CdcKafkaPublisher: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::mySQLCdcKafkaPublisher
+- org.apache.curator.framework.CuratorFramework: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::curatorFramework
+- com.networknt.eventuate.server.common.EventTableChangesToAggregateTopicTranslator: com.networknt.tram.cdc.server.MySqlTramCdcServiceInitializer::mySqlEventTableChangesToAggregateTopicTranslator
 # HandlerProvider implementation
 - com.networknt.server.HandlerProvider:
   - com.networknt.tram.cdc.server.CdcServer
