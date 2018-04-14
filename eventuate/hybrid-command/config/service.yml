@@ -6,6 +6,7 @@ singletons:
       jdbcUrl: jdbc:mysql://mysql:3306/eventuate?useSSL=false
       username: mysqluser
       password: mysqlpw
+      maximumPoolSize: 2
 - com.networknt.eventuate.common.impl.sync.AggregateCrud:
   - com.networknt.eventuate.client.EventuateLocalDBAggregateCrud
 - com.networknt.eventuate.common.impl.sync.AggregateEvents:
