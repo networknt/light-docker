@@ -3,7 +3,7 @@ version: "2"
 # Services
 #
 services:
-  eventuate-cdcserver:
+  local-eventuate-cdcserver:
     build: ./eventuate-cdcserver
     volumes:
       - ./eventuate-cdcserver/config:/config
