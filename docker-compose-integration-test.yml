@@ -59,12 +59,12 @@ services:
     networks:
       - localnet
 
-  # tram-cdcserver:
-  #   image: networknt/tram-cdcserver:latest
-  #   volumes:
-  #     - ./tram-cdcserver/config:/config
-  #   networks:
-  #     - localnet
+  tram-cdcserver:
+    image: networknt/tram-cdcserver:latest
+    volumes:
+      - ./tram-cdcserver/config:/config
+    networks:
+      - localnet
 
   redis:
     image: redis
