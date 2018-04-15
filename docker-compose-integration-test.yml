@@ -56,6 +56,8 @@ services:
     image: networknt/eventuate-cdcserver:latest
     volumes:
       - ./eventuate-cdcserver/config:/config
+    links:
+      - kafka
     networks:
       - localnet
 
@@ -63,6 +65,8 @@ services:
     image: networknt/tram-cdcserver:latest
     volumes:
       - ./tram-cdcserver/config:/config
+    links:
+      - kafka   
     networks:
       - localnet
 
