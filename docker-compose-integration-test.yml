@@ -36,6 +36,8 @@ services:
     ports:
       - 2181:2181
       - 2888:2888
+    links:
+      - mysql
     networks:
       - localnet
 
@@ -66,7 +68,7 @@ services:
     volumes:
       - ./tram-cdcserver/config:/config
     links:
-      - kafka   
+      - kafka
     networks:
       - localnet
 
