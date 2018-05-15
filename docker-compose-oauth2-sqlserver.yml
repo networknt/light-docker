@@ -13,6 +13,8 @@
         MSSQL_PID: Developer
       ports:
         - '1433:1433'
+      networks:
+        - localnet
 
     oauth2-code:
       image: networknt/oauth2-code
