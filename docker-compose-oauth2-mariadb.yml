@@ -2,6 +2,8 @@
   services:
     mariadb:
       image: mariadb:10.3
+      ports:
+        - 3306:3306
       volumes:
         - ./light-oauth2/mariadb:/docker-entrypoint-initdb.d
       networks:

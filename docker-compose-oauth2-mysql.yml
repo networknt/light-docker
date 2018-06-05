@@ -2,6 +2,8 @@
   services:
     mysqldb:
       image: mysql:5.7.16
+      ports:
+        - 3306:3306
       volumes:
         - ./light-oauth2/mysql:/docker-entrypoint-initdb.d
       networks:
