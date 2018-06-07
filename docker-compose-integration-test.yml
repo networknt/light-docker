@@ -78,6 +78,14 @@ services:
       - 6379:6379
     networks:
       - localnet
+  arango:
+    image: arangodb/arangodb:latest
+    ports:
+      - 8529:8529
+    environment:
+      - ARANGO_ROOT_PASSWORD=openSesame
+    networks:
+      - localnet
 
 # Networks
 #
