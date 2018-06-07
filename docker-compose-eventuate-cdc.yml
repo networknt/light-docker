@@ -11,7 +11,7 @@ version: "2"
 #
 services:
   mysql:
-     image: networknt/mysql:5.7
+     image: networknt/mysql
      ports:
       - 3306:3306
      environment:
