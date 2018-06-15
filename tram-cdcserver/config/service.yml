@@ -5,7 +5,7 @@ singletons:
       jdbcUrl: jdbc:mysql://mysql:3306/eventuate?useSSL=false
       username: mysqluser
       password: mysqlpw
-      maximumPoolSize: 2
+      maximumPoolSize: 4
       useServerPrepStmts: true
       cachePrepStmts: true
       cacheCallableStmts: true
