@@ -29,7 +29,7 @@ CREATE UNIQUE INDEX email_idx ON user_profile(email);
 
 CREATE TABLE client (
   client_id VARCHAR(36) NOT NULL,
-  client_type VARCHAR(12) NOT NULL,  -- public, confidential, trusted
+  client_type VARCHAR(12) NOT NULL,  -- public, confidential, trusted, external
   client_profile VARCHAR(10) NOT NULL, -- webserver, mobile, browser, batch, service
   client_secret VARCHAR(1024) NOT NULL,
   client_name VARCHAR(32) NOT NULL,
