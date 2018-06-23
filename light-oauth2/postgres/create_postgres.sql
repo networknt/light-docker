@@ -30,6 +30,7 @@ CREATE TABLE client (
   custom_claim VARCHAR(4000), -- custom claim(s) in json format that will be included in the jwt token
   redirect_uri VARCHAR(1024),
   authenticate_class VARCHAR(256),
+  deref_client_id VARCHAR(36), -- only this client calls AS to deref token to JWT for external client type
   owner_id VARCHAR(32) NOT NULL,
   PRIMARY KEY (client_id),
   FOREIGN KEY (owner_id) REFERENCES user_profile(user_id)
