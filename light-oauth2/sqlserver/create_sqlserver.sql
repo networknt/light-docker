@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS service;
 DROP TABLE IF EXISTS client;
 DROP TABLE IF EXISTS user_profile;
 DROP TABLE IF EXISTS refresh_token;
+DROP TABLE IF EXISTS oauth_provider;
 DROP TABLE IF EXISTS audit_log;
 
 CREATE TABLE user_profile (
@@ -83,6 +84,14 @@ CREATE TABLE refresh_token (
   refresh_token VARCHAR(256) NOT NULL,
   PRIMARY KEY (client_id, refresh_token),
   FOREIGN KEY (client_id) REFERENCES client(client_id)
+);
+
+CREATE TABLE oauth_provider (
+  provider_id VARCHAR(2) NOT NULL,
+  server_url VARCHAR(256) NOT NULL,  -- different framework will have different endpoint format.
+  uri VARCHAR(64) NOT NULL,
+  provider_name VARCHAR(64),
+  PRIMARY KEY (provider_id)
 );
 
 create table audit_log (
