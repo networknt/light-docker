@@ -80,6 +80,15 @@ CREATE TABLE refresh_token (
   CONSTRAINT refresh_token_client_fk FOREIGN KEY (client_id) REFERENCES client(client_id)
 );
 
+CREATE TABLE oauth_provider (
+  provider_id VARCHAR(2) NOT NULL,
+  server_url VARCHAR(256) NOT NULL,  -- different framework will have different endpoint format.
+  uri VARCHAR(64) NOT NULL,
+  provider_name VARCHAR(64),
+   CONSTRAINT oauth_provider_pk  PRIMARY KEY (provider_id)
+);
+
+
 create table audit_log (
   log_id numeric, -- system milliseonds from 1970.
   service_id VARCHAR2(32) NOT NULL,
