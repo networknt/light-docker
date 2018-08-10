@@ -5,6 +5,8 @@ services:
     image: networknt/com.networknt.apia-1.0.0
     ports:
     - "7441:7441"
+    environment:
+    - STATUS_HOST_IP=${DOCKER_HOST_IP}
     networks:
     - localnet
 
@@ -12,6 +14,8 @@ services:
     image: networknt/com.networknt.apib-1.0.0
     ports:
     - "7442:7442"
+    environment:
+    - STATUS_HOST_IP=${DOCKER_HOST_IP}
     networks:
     - localnet
 
@@ -19,6 +23,8 @@ services:
     image: networknt/com.networknt.apic-1.0.0
     ports:
     - "7443:7443"
+    environment:
+    - STATUS_HOST_IP=${DOCKER_HOST_IP}
     networks:
     - localnet
 
@@ -26,6 +32,8 @@ services:
     image: networknt/com.networknt.apid-1.0.0
     ports:
     - "7444:7444"
+    environment:
+    - STATUS_HOST_IP=${DOCKER_HOST_IP}
     networks:
     - localnet
 networks:
