@@ -8,3 +8,4 @@ COPY saga_example.sql /docker-entrypoint-initdb.d
 COPY user_management_ddl.sql /docker-entrypoint-initdb.d
 COPY create_tokenization.sql /docker-entrypoint-initdb.d
 COPY create_vault.sql /docker-entrypoint-initdb.d
+COPY config_server_mysql.sql /docker-entrypoint-initdb.d

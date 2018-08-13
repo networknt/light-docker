@@ -1,0 +1,22 @@
+version: "2"
+#
+# Services
+#
+services:
+   hybrid-service:
+      build: ./hybrid-services/
+      volumes:
+        - ./hybrid-service/config:/config
+        - ./hybrid-service/service:/service
+      ports:
+        - 8081:8081
+      networks:
+          - localnet
+
+
+# Networks
+#
+networks:
+  localnet:
+    # driver: bridge
+    external: true
