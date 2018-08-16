@@ -6,10 +6,10 @@ services:
    hybrid-service:
       build: ./hybrid-services/
       volumes:
-        - ./hybrid-service/config:/config
-        - ./hybrid-service/service:/service
+        - ./hybrid-services/config:/config
+        - ./hybrid-services/service:/service
       ports:
-        - 8081:8081
+        - 8443:8443
       networks:
           - localnet
 
