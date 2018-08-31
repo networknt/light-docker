@@ -6,7 +6,6 @@ GRANT ALL PRIVILEGES ON config.* TO 'mysqluser'@'%' WITH GRANT OPTION;
 USE config;
 
 DROP TABLE IF EXISTS config_value;
-DROP TABLE IF EXISTS config_secret;
 DROP TABLE IF EXISTS config_service;
 
 
@@ -19,14 +18,6 @@ CREATE TABLE config_value (
 ENGINE=INNODB;
 
 
-CREATE TABLE config_secret (
-  config_key VARCHAR(256) NOT NULL,
-  config_secret_hash VARCHAR(256) NOT NULL,
-  config_secret_salt VARCHAR(256) NOT NULL,
-  config_service_id VARCHAR(256) NOT NULL,
-  PRIMARY KEY (config_key, config_service_id)
-)
-ENGINE=INNODB;
 
 
 CREATE TABLE config_service (
