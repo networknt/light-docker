@@ -3,9 +3,7 @@ version: "2"
 # Services
 #
 services:
-
-
-   mysql:
+  mysql:
        build: ./mysql/
        ports:
            - 3306:3306
@@ -16,22 +14,10 @@ services:
        networks:
            - localnet
 
-   hybrid-service:
-      build: ./hybrid-services/
-      volumes:
-        - ./hybrid-services/config:/config
-        - ./hybrid-services/service:/service
-      ports:
-        - 8443:8443
-      links:
-          - mysql
-      networks:
-          - localnet
 
 
 # Networks
 #
 networks:
   localnet:
-    # driver: bridge
     external: true
