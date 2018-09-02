@@ -5,6 +5,7 @@ DROP TABLE client CASCADE CONSTRAINTS;
 DROP TABLE user_profile CASCADE CONSTRAINTS;
 DROP TABLE audit_log CASCADE CONSTRAINTS;
 DROP TABLE refresh_token CASCADE CONSTRAINTS;
+DROP TABLE oauth_provider CASCADE CONSTRAINTS;
 
 CREATE TABLE user_profile (
   user_id VARCHAR2(32) NOT NULL,
@@ -81,13 +82,12 @@ CREATE TABLE refresh_token (
 );
 
 CREATE TABLE oauth_provider (
-  provider_id VARCHAR(2) NOT NULL,
-  server_url VARCHAR(256) NOT NULL,  -- different framework will have different endpoint format.
-  uri VARCHAR(64) NOT NULL,
-  provider_name VARCHAR(64),
-   CONSTRAINT oauth_provider_pk  PRIMARY KEY (provider_id)
+  provider_id VARCHAR2(2) NOT NULL,
+  server_url VARCHAR2(256) NOT NULL,  -- different framework will have different endpoint format.
+  uri VARCHAR2(64) NOT NULL,
+  provider_name VARCHAR2(64),
+  CONSTRAINT provider_pk PRIMARY KEY (provider_id)
 );
-
 
 create table audit_log (
   log_id numeric, -- system milliseonds from 1970.

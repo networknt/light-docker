@@ -12,8 +12,8 @@ DROP TABLE IF EXISTS service;
 DROP TABLE IF EXISTS client;
 DROP TABLE IF EXISTS user_profile;
 DROP TABLE IF EXISTS refresh_token;
-DROP TABLE IF EXISTS oauth_provider;
 DROP TABLE IF EXISTS audit_log;
+DROP TABLE IF EXISTS oauth_provider;
 
 CREATE TABLE user_profile (
   user_id VARCHAR(32) NOT NULL,
