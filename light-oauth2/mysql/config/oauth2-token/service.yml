@@ -10,9 +10,13 @@ singletons:
 - com.networknt.server.ShutdownHookProvider:
   - com.networknt.oauth.cache.CacheShutdownHookProvider
 
+- com.networknt.oauth.auth.Authenticator<com.networknt.oauth.auth.DefaultAuth>:
+  - com.networknt.oauth.auth.DefaultAuthenticator
+- com.networknt.oauth.auth.Authenticator<com.networknt.oauth.auth.MarketPlaceAuth>:
+  - com.networknt.oauth.auth.MarketPlaceAuthenticator
 - javax.sql.DataSource:
   - com.zaxxer.hikari.HikariDataSource:
-      jdbcUrl: jdbc:mysql://mysqldb:3306/oauth2?useSSL=false
+      jdbcUrl: jdbc:mysql://mysqldb:3306/oauth2?useSSL=false&disableMariaDbDriver
       username: mysqluser
       password: mysqlpw
       maximumPoolSize: 2
