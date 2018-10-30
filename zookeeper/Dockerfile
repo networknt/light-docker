@@ -1,1 +1,1 @@
-FROM zookeeper:3.4
+FROM zookeeper:3.4.13
