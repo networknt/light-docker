@@ -27,6 +27,16 @@ scrape_configs:
         services:
           - 'multimodule_tram-todolist-command-service'
           - 'multimodule_tram-todolist-view-service'
+          - 'com.networknt.bookstore-service-api-3.0.1'
+          - 'com.networknt.computerstore-service-api-3.0.1'
+          - 'com.networknt.foodstore-service-api-3.0.1'
+          - 'com.networknt.petstore-service-api-3.0.1'
+          - 'com.networknt.marketsample-service-3.0.1'
+
+    tls_config:
+      # Skip verification until we have resolved why the certificate validation
+      # for the kubelet on API server nodes fail.
+      insecure_skip_verify: true
 
     relabel_configs:
       - source_labels: ['__meta_consul_service']
@@ -42,9 +52,11 @@ scrape_configs:
         regex: '.*public_hostname=([^,]*).*'
         replacement: '${1}'
 
+
     metrics_path: /v1/prometheus
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
+    scheme: https
 
   - job_name: 'prometheus'
     static_configs:
