@@ -1,4 +1,4 @@
-FROM jimschubert/8-jdk-alpine-mvn:latest
+FROM maven:3.6.1-jdk-11-slim
 
 MAINTAINER Steve Hu <steve.hu@gmail.com>
 
