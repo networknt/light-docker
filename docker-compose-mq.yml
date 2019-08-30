@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+    mqseries:
+        image: ibmcom/mq:9-cd
+        ports:
+            - "1414:1414"
+        container_name: mqserver
+        environment:
+            - LICENSE=accept
+            - MQ_QMGR_NAME=MQAZ01
+        volumes:
+            - mqseries-volume:/mnt/mqm
+        stdin_open: true
+        tty: true
+        restart: always
+volumes:
+    mqseries-volume: mnt/mqm/
+
+# Networks
+#
+networks:
+    localnet:
+        # driver: bridge
+        external: true
