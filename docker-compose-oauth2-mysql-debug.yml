@@ -12,7 +12,7 @@
         MYSQL_USER: mysqluser
         MYSQL_PASSWORD: mysqlpw
     oauth2-code:
-      image: networknt/oauth2-code
+      image: networknt/oauth2-code:2.0.10
       ports:
         - "6881:6881"
       volumes:
@@ -27,7 +27,7 @@
       #    tag: "oauth2-code"
       #    env: "dev"
     oauth2-token:
-      image: networknt/oauth2-token
+      image: networknt/oauth2-token:2.0.10
       ports:
         - "6882:6882"
       volumes:
@@ -42,7 +42,7 @@
       #    tag: "oauth2-token"
       #    env: "dev"
     oauth2-service:
-      image: networknt/oauth2-service
+      image: networknt/oauth2-service:2.0.10
       ports:
         - "6883:6883"
       volumes:
@@ -57,7 +57,7 @@
       #    tag: "oauth2-service"
       #    env: "dev"
     oauth2-client:
-      image: networknt/oauth2-client
+      image: networknt/oauth2-client:2.0.10
       ports:
         - "6884:6884"
       volumes:
@@ -72,7 +72,7 @@
       #    tag: "oauth2-client"
       #    env: "dev"
     oauth2-user:
-      image: networknt/oauth2-user
+      image: networknt/oauth2-user:2.0.10
       ports:
         - "6885:6885"
       volumes:
@@ -87,7 +87,7 @@
       #    tag: "oauth2-user"
       #    env: "dev"
     oauth2-key:
-      image: networknt/oauth2-key
+      image: networknt/oauth2-key:2.0.10
       ports:
         - "6886:6886"
       volumes:
@@ -102,7 +102,7 @@
       #    tag: "oauth2-key"
       #    env: "dev"
     oauth2-refresh-token:
-      image: networknt/oauth2-refresh-token
+      image: networknt/oauth2-refresh-token:2.0.10
       ports:
         - "6887:6887"
       volumes:
