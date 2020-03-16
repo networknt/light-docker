@@ -16,3 +16,14 @@ singletons:
     - com.networknt.balance.RoundRobinLoadBalance
   - com.networknt.cluster.Cluster:
     - com.networknt.cluster.LightCluster
+  - javax.sql.DataSource:
+    - com.zaxxer.hikari.HikariDataSource:
+        jdbcUrl: jdbc:mysql://38.113.162.51:3306/ref?useSSL=false&disableMariaDbDriver
+        username: mysqluser
+        password: mysqlpw
+        maximumPoolSize: 2
+        useServerPrepStmts: true
+        cachePrepStmts: true
+        cacheCallableStmts: true
+        prepStmtCacheSize: 4096
+        prepStmtCacheSqlLimit: 2048
