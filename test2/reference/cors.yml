@@ -1,0 +1,13 @@
+enabled: true
+allowedOrigins:
+  - https://signin.lightapi.net
+  - https://lightapi.net
+  - https://dev.lightapi.net
+  - https://ob.lightapi.net
+  - http://localhost:3000
+  - https://localhost:3000
+  - http://networknt.github.io
+allowedMethods:
+  - GET
+  - POST
+  - PUT
