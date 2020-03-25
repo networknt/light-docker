@@ -54,24 +54,6 @@ services:
     networks:
       - localnet
 
-  eventuate-cdcserver:
-    image: networknt/eventuate-cdcserver:latest
-    volumes:
-      - ./eventuate-cdcserver/config:/config
-    links:
-      - kafka
-    networks:
-      - localnet
-
-  # tram-cdcserver:
-  #   image: networknt/tram-cdcserver:latest
-  #   volumes:
-  #     - ./tram-cdcserver/config:/config
-  #   links:
-  #     - kafka
-  #   networks:
-  #     - localnet
-
   redis:
     image: redis
     ports:
