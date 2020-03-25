@@ -20,39 +20,39 @@ version: "2"
 # for integration test.
 #
 services:
-  mysql:
-    image: networknt/mysql
-    ports:
-      - 3306:3306
-    environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_USER=mysqluser
-      - MYSQL_PASSWORD=mysqlpw
-    networks:
-      - localnet
+  # mysql:
+  #   image: networknt/mysql
+  #   ports:
+  #     - 3306:3306
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=rootpassword
+  #     - MYSQL_USER=mysqluser
+  #     - MYSQL_PASSWORD=mysqlpw
+  #   networks:
+  #     - localnet
 
-  zookeeper:
-    image: networknt/zookeeper:latest
-    ports:
-      - 2181:2181
-      - 2888:2888
-    links:
-      - mysql
-    networks:
-      - localnet
+  # zookeeper:
+  #   image: networknt/zookeeper:latest
+  #   ports:
+  #     - 2181:2181
+  #     - 2888:2888
+  #   links:
+  #     - mysql
+  #   networks:
+  #     - localnet
 
-  kafka:
-    image: networknt/kafka:latest
-    ports:
-      - 9092:9092
-    links:
-      - zookeeper
-    environment:
-      - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
-      - KAFKA_HEAP_OPTS=-Xmx320m -Xms320m
-      - ZOOKEEPER_SERVERS=zookeeper:2181
-    networks:
-      - localnet
+  # kafka:
+  #   image: networknt/kafka:latest
+  #   ports:
+  #     - 9092:9092
+  #   links:
+  #     - zookeeper
+  #   environment:
+  #     - ADVERTISED_HOST_NAME=${DOCKER_HOST_IP}
+  #     - KAFKA_HEAP_OPTS=-Xmx320m -Xms320m
+  #     - ZOOKEEPER_SERVERS=zookeeper:2181
+  #   networks:
+  #     - localnet
 
   redis:
     image: redis
