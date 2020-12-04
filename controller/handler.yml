@@ -1,0 +1,174 @@
+
+
+# Handler middleware chain configuration
+#----------------------------------------
+enabled: true
+
+# Configuration for the LightHttpHandler. The handler is the base class  for all middleware, server and health handlers
+# set the Status Object in the AUDIT_INFO, for auditing purposes
+# default, if not set:false
+auditOnError: ${handler.auditOnError:false}
+
+# set the StackTrace in the AUDIT_INFO, for auditing purposes
+# default, if not set:false
+auditStackTrace: ${handler.auditStackTrace:false}
+
+#------------------------------------------------------------------------------
+# Support individual handler chains for each separate endpoint. It allows framework
+# handlers like health check, server info to bypass majority of the middleware handlers
+# and allows mixing multiple frameworks like OpenAPI and GraphQL in the same instance.
+#
+# handlers  --  list of handlers to be used across chains in this microservice
+#               including the routing handlers for ALL endpoints
+#           --  format: fully qualified handler class name@optional:given name
+# chains    --  allows forming of [1..N] chains, which could be wholly or
+#               used to form handler chains for each endpoint
+#               ex.: default chain below, reused partially across multiple endpoints
+# paths     --  list all the paths to be used for routing within the microservice
+#           ----  path: the URI for the endpoint (ex.: path: '/v1/pets')
+#           ----  method: the operation in use (ex.: 'post')
+#           ----  exec: handlers to be executed -- this element forms the list and
+#                       the order of execution for the handlers
+#
+# IMPORTANT NOTES:
+# - to avoid executing a handler, it has to be removed/commented out in the chain
+#   or change the enabled:boolean to false for a middleware handler configuration.
+# - all handlers, routing handler included, are to be listed in the execution chain
+# - for consistency, give a name to each handler; it is easier to refer to a name
+#   vs a fully qualified class name and is more elegant
+# - you can list in chains the fully qualified handler class names, and avoid using the
+#   handlers element altogether
+#------------------------------------------------------------------------------
+handlers:
+  # Light-framework cross-cutting concerns implemented in the microservice
+  - com.networknt.exception.ExceptionHandler@exception
+  - com.networknt.metrics.MetricsHandler@metrics
+  - com.networknt.traceability.TraceabilityHandler@traceability
+  - com.networknt.correlation.CorrelationHandler@correlation
+  - com.networknt.basicauth.BasicAuthHandler@basic
+  - com.networknt.openapi.OpenApiHandler@specification
+  - com.networknt.openapi.JwtVerifyHandler@security
+  - com.networknt.body.BodyHandler@body
+  - com.networknt.audit.AuditHandler@audit
+  # DumpHandler is to dump detail request/response info to log, useful for troubleshooting but not suggested to use in production due to it may lower the performance
+  # - com.networknt.dump.DumpHandler@dump
+  - com.networknt.sanitizer.SanitizerHandler@sanitizer
+  - com.networknt.openapi.ValidatorHandler@validator
+  # Customer business domain specific cross-cutting concerns handlers
+  # - com.example.validator.CustomizedValidator@custvalidator
+  # Framework endpoint handlers
+  - com.networknt.health.HealthGetHandler@health
+  - com.networknt.info.ServerInfoGetHandler@info
+  - com.networknt.specification.SpecDisplayHandler@spec
+  - com.networknt.specification.SpecSwaggerUIHandler@swaggerui
+  - com.networknt.resource.PathResourceHandler@resource@resource
+  # - com.networknt.metrics.prometheus.PrometheusGetHandler@getprometheus
+  # Business Handlers
+  - com.networknt.controller.handler.ServicesPostHandler
+  - com.networknt.controller.handler.ServicesDeleteHandler
+  - com.networknt.controller.handler.ServicesGetHandler
+  - com.networknt.controller.handler.ServicesLookupGetHandler
+  - com.networknt.controller.handler.ServicesCheckPutHandler
+  - com.networknt.controller.handler.ServicesCheckIdGetHandler
+  - com.networknt.controller.handler.ServicesInfoNodeGetHandler
+  - com.networknt.controller.handler.WebSocketHandler
+  - com.networknt.controller.handler.ServicesLoggerGetHandler
+  - com.networknt.controller.handler.ServicesLoggerPostHandler
+
+chains:
+  default:
+    - exception
+    - metrics
+    - traceability
+    - correlation
+    - specification
+    - security
+    - body
+    - audit
+    - sanitizer
+    - validator
+  basic:
+    - exception
+    - metrics
+    - traceability
+    - correlation
+    - basic
+    - specification
+    - body
+    - audit
+    - sanitizer
+    - validator
+
+paths:
+  - path: '/services'
+    method: 'POST'
+    exec:
+      - default
+      - com.networknt.controller.handler.ServicesPostHandler
+  - path: '/services'
+    method: 'DELETE'
+    exec:
+      - default
+      - com.networknt.controller.handler.ServicesDeleteHandler
+  - path: '/services'
+    method: 'GET'
+    exec:
+      - basic
+      - com.networknt.controller.handler.ServicesGetHandler
+  - path: '/services/lookup'
+    method: 'GET'
+    exec:
+      - default
+      - com.networknt.controller.handler.ServicesLookupGetHandler
+  - path: '/services/check'
+    method: 'PUT'
+    exec:
+      - default
+      - com.networknt.controller.handler.ServicesCheckPutHandler
+  - path: '/services/check/{id}'
+    method: 'GET'
+    exec:
+      - basic
+      - com.networknt.controller.handler.ServicesCheckIdGetHandler
+  - path: '/services/info/{node}'
+    method: 'GET'
+    exec:
+      - basic
+      - com.networknt.controller.handler.ServicesInfoNodeGetHandler
+  - path: '/ws'
+    method: 'get'
+    exec:
+      - com.networknt.controller.handler.WebSocketHandler
+  - path: '/services/logger'
+    method: 'GET'
+    exec:
+      - basic
+      - com.networknt.controller.handler.ServicesLoggerGetHandler
+  - path: '/services/logger'
+    method: 'POST'
+    exec:
+      - basic
+      - com.networknt.controller.handler.ServicesLoggerPostHandler
+
+  - path: '/health/${server.serviceId:com.networknt.controller-1.0.0}'
+    method: 'get'
+    exec:
+      - health
+
+  - path: '/server/info'
+    method: 'get'
+    exec:
+      - info
+
+
+  - path: '/spec.yaml'
+    method: 'get'
+    exec:
+      - spec
+  - path: '/specui.html'
+    method: 'get'
+    exec:
+      - swaggerui
+
+defaultHandlers:
+  - resource

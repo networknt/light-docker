@@ -1,0 +1,5 @@
+path: /
+base: ${path-resource.base:/home/steve/networknt/light-controller/view/build}
+prefix: true
+transferMinSize: 10485760
+directoryListingEnabled: false

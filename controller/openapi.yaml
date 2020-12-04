@@ -1,0 +1,460 @@
+openapi: 3.0.2
+info:
+  title: Control Panel - OpenAPI 3.0
+  description: |-
+    All light-4j services can register here during startup and deregister during the shutdown. It ensures that the control panel has a snapshot of running services all the time. The control panel also sends health check requests to each service continuously to ensure its healthy and server info request to assist the service certification. With the information above, this service can serve as a global discovery for service to service invocations. 
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: stevehu@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 1.0.0
+servers:
+  - url: 'https://lightapi.net'
+paths:
+  '/services':
+    post:
+      summary: Add a new service with opitonal health checks
+      description: Register a service during its startup
+      operationId: register
+      requestBody:
+        description: Register a service with optional health checks
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Service'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '400':
+          description: Invalid Service Register Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      security:
+        - portal_auth:
+            - 'portal.w'
+    delete:
+      summary: Remove a service and its health checks from the registry
+      description: Deregister a service during its shutdown
+      operationId: deregister
+      parameters:
+        - name: serviceId
+          in: query
+          description: ID of the service
+          required: true
+          schema:
+            type: string
+        - name: tag
+          in: query
+          description: Return only nodes with the tag
+          required: false
+          schema:
+            type: string
+        - name: protocol
+          in: query
+          description: Return only nodes with the prototol
+          required: true
+          schema:
+            type: string
+        - name: address
+          in: query
+          description: IP address of the node
+          required: true
+          schema:
+            type: string
+        - name: port
+          in: query
+          description: Port number of the node
+          required: true
+          schema:
+            type: integer
+      
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '400':
+          description: Invalid Service Register Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      security:
+        - portal_auth:
+            - 'portal.w'
+    get:
+      summary: Query all healthy services
+      description: Returns a list of services
+      operationId: getHealthService
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      security:
+        - portal_auth:
+            - 'portal.r'
+            - 'portal.w'
+  '/services/lookup':
+    get:
+      summary: Discover service with serviceId and optional tag
+      description: Returns a list of nodes for the service
+      operationId: getLookupService
+      parameters:
+        - name: serviceId
+          in: query
+          description: ID of the service
+          required: true
+          schema:
+            type: string
+        - name: tag
+          in: query
+          description: Return only nodes with the tag
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      security:
+        - portal_auth:
+            - 'portal.r'
+            - 'portal.w'
+  '/services/check':
+    put:
+      summary: TTL type check to set the status of the check to pass or fail
+      description: TTL check to from the service for pass or not
+      operationId: checkStatus
+      requestBody:
+        description: TTL check to notify if the service is pass or not
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckStatus'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '400':
+          description: Invalid Service Register Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      security:
+        - portal_auth:
+            - 'portal.w'
+  '/services/check/{id}':
+    get:
+      summary: Retrieve the current check status for a check id
+      description: Get the live check status for the node
+      operationId: getCheckStatus
+      parameters:
+        - name: id
+          in: path
+          description: id of the check object in format serviceId|tag:address:port
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Check'
+        '400':
+          description: Invalid Service Register Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      security:
+        - portal_auth:
+            - 'portal.r'
+            - 'portal.w'
+  '/services/info/{node}':
+    get:
+      summary: Query service info by node of address and port
+      description: Returns a service info object
+      operationId: getServiceInfo
+      parameters:
+        - name: node
+          in: path
+          description: node of the service in address:port format
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      security:
+        - portal_auth:
+            - 'portal.r'
+            - 'portal.w'
+
+  '/services/logger':
+    get:
+      summary: Query logger for a particular instance
+      description: Returns a list of loggers with logging levels
+      operationId: getServiceLogger
+      parameters:
+        - name: protocol
+          in: query
+          description: target server protocol, http or https.
+          required: true
+          schema:
+            type: string
+            enum: [
+              "http",
+              "https"
+            ]
+        - name: address
+          in: query
+          description: target server address.
+          required: true
+          schema:
+            type: string
+        - name: port
+          in: query
+          description: target server port number.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      security:
+        - portal_auth:
+            - 'portal.r'
+            - 'portal.w'
+    post:
+      summary: Update the logging level for a particular instance
+      description: Returns a list of loggers with logging levels after updated.
+      operationId: postServiceLogger
+      requestBody:
+        description: Service that is updating loggers.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoggerConfig'
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      security:
+        - portal_auth:
+            - 'portal.w'
+components:
+  schemas:
+    Service:
+      type: object
+      properties:
+        serviceId:
+          type: string
+          description: a unique ID for the service across the organization.
+          example: com.networknt.petstore.v1
+        name:
+          type: string
+          description: a logical name of the service.
+          example: com.networknt.petstore.v1
+        tag:
+          type: string
+          description: a list of tags to assign to the service.
+        protocol:
+          type: string
+          description: http or https for the server.
+        address:
+          type: string
+          description: The address of the service.
+        port:
+          type: integer
+          description: The port number of the service
+          example: 8080
+        check:
+          $ref: '#/components/schemas/Check'
+      required:
+        - serviceId
+        - protocol
+        - address
+        - port  
+    Check:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the check
+        id:
+          type: string
+          description: A unique ID for this check on the node
+        interval:
+          type: integer
+          description: The frequency at which to run this check in millisecond
+        notes:
+          type: string
+          description: Arbitrary information for humans. 
+        deregisterCriticalServiceAfter:
+          type: integer
+          description: Check associated with a service should deregister after this time in millisecond
+        http: 
+          type: string
+          description: An HTTP check to perform a GET request against the value of HTTP every Interval. 
+        tlsSkipVerify: 
+          type: boolean
+          description: If the certificate for an HTTPS check should not be verified.
+      required:
+        - id
+        - interval
+        - deregisterCriticalServiceAfter
+    CheckStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: A unique ID for the check with serviceId, address and port combination
+        pass:
+          type: boolean
+          description: If the check is passed or failed
+    LoggerConfig:
+      type: object
+      properties:
+        protocol:
+          type: string
+          description: Target server protocol
+        address:
+          type: string
+          description: Target server IP address
+        port:
+          type: integer
+          description: Target server port number
+        loggers:
+          type: array
+          description: A list of LoggerInfo entries
+          items:
+            $ref: '#/components/schemas/LoggerInfo'
+      required:
+        - protocol
+        - address
+        - port
+        - loggers
+
+    LoggerInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the logger
+        level:
+          type: string
+          enum: [
+            "ERROR",
+            "WARN",
+            "INFO",
+            "DEBUG",
+            "TRACE"
+          ]
+          description: Logging level
+      required:
+        - name
+        - level
+    Status:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        code:
+          type: string
+        message:
+          type: string
+        description:
+          type: string
+        severity:
+          type: string
+      required:
+        - statusCode
+        - code
+        - message
+        - description
+
+  securitySchemes:
+    portal_auth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://lightapi.net/token'
+          scopes:
+            'portal.w': update control panel
+            'portal.r': query control panel
