@@ -2,13 +2,13 @@ version: '2'
 
 services:
 
-  apia:
-    image: networknt/apia-pr
-    environment:
-    - STATUS_HOST_IP=${DOCKER_HOST_IP}
-    volumes:
-    - ./portal-registry/apia:/config
-    network_mode: host
+  # apia:
+  #   image: networknt/apia-pr
+  #   environment:
+  #   - STATUS_HOST_IP=${DOCKER_HOST_IP}
+  #   volumes:
+  #   - ./portal-registry/apia:/config
+  #   network_mode: host
 
   apib1:
     image: networknt/apib-pr
