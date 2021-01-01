@@ -1,0 +1,10 @@
+# The aws region that is used to create the LambdaClient.
+region: us-east-2
+# The LogType of the execution log of Lambda. Set Tail to include and None to not include.
+logType: Tail
+# mapping of the endpoints to Lambda functions
+functions:
+  /pets@get: arn:aws:lambda:us-east-2:964637446810:function:my-function
+  /pets@post: arn:aws:lambda:us-east-2:964637446810:function:petstore-PetsPostFunction-1C01PLHODM1YW
+  /pets/{petId}@get: arn:aws:lambda:us-east-2:964637446810:function:petstore-PetsPetIdGetFunction-1B6VRES9XU4FH
+  /pets/{petId}@delete: arn:aws:lambda:us-east-2:964637446810:function:petstore-PetsPetIdDeleteFunction-1DBS10V4CHGT7
