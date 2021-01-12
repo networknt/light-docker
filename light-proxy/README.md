@@ -6,3 +6,7 @@ Deploy the light-proxy to the AWS and proxy to the Lambda funcations with all th
 
 The openapi.yaml is from the petstore from model-config/rest/openapi/petstore folder and the lambda is generated from model-config/lambda/petstore
 
+This folder is not used anymore as the project generated will have a proxy folder with configuration and the script to build docker image. 
+
+
+

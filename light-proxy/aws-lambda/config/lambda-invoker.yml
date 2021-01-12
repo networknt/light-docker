@@ -4,7 +4,7 @@ region: us-east-2
 logType: Tail
 # mapping of the endpoints to Lambda functions
 functions:
-  /pets@get: arn:aws:lambda:us-east-2:964637446810:function:my-function
-  /pets@post: arn:aws:lambda:us-east-2:964637446810:function:petstore-PetsPostFunction-1C01PLHODM1YW
-  /pets/{petId}@get: arn:aws:lambda:us-east-2:964637446810:function:petstore-PetsPetIdGetFunction-1B6VRES9XU4FH
-  /pets/{petId}@delete: arn:aws:lambda:us-east-2:964637446810:function:petstore-PetsPetIdDeleteFunction-1DBS10V4CHGT7
+  /pets@get: PetsGetFunction
+  /pets@post: PetsPostFunction
+  /pets/{petId}@get: PetsPetIdGetFunction
+  /pets/{petId}@delete: PetsPetIdDeleteFunction
