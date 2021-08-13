@@ -14,4 +14,4 @@ fi
 docker build -t ${IMAGE_NAME} .
 docker tag ${IMAGE_NAME} ${IMAGE_NAME}:latest
 docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
-docker push ${IMAGE_NAME -a -a}
+docker push ${IMAGE_NAME -a}
