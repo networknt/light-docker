@@ -40,7 +40,6 @@ publish() {
     echo "Images built with version $VERSION"
     echo "Pushing image to DockerHub"
     docker push $IMAGE_NAME -a
-    docker push $IMAGE_NAME -a:$VERSION
     echo "Image successfully published!"
 }
 
