@@ -1,0 +1,11 @@
+# Use postgres/secret user/password credentials
+version: '3.1'
+
+services:
+  timescale:
+    image: timescale/timescaledb:latest-pg14
+    volumes:
+      - /opt/timescale:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: secret
+    network_mode: host

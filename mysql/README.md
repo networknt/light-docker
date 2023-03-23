@@ -34,4 +34,12 @@ docker-compose up
 
 You can use mysql cli to connect to mysql database from your host.
 
- 
+
+## Recreate Database
+
+```
+docker-compose -f docker-compose-mysql.yml down --rmi all
+```
+
+The above command will remove all the existing databases and recreate from the script again. 
+
