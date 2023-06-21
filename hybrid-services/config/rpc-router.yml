@@ -1,6 +1,0 @@
----
-description: RPC router description
-handlerPackage: 'net.lightapi'
-jsonPath: /api/json
-
-
