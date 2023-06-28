@@ -161,6 +161,29 @@
         - elasticsearch
       environment:
         - LS_HEAP_SIZE=2048m
+    prometheus:
+      image: prom/prometheus:latest
+      volumes:
+        - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        - ./prometheus_rules.yml:/etc/prometheus/prometheus_rules.yml
+      command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+      ports:
+        - 9090:9090
+
+    node_exporter:
+      image: prom/node-exporter:latest
+      volumes:
+        - /proc:/host/proc:ro
+        - /sys:/host/sys:ro
+        - /:/rootfs:ro
+      command:
+        - '--path.procfs=/host/proc'
+        - '--path.sysfs=/host/sys'
+        - '--path.rootfs=/rootfs'
+        - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+      ports:
+        - 9100:9100
 
 
   networks:
