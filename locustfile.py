@@ -1,6 +1,8 @@
 from locust import HttpUser, task
 
 import logging
+from urllib.parse import urlparse, parse_qs
+
 
 
 class OAuthUser(HttpUser):
@@ -12,6 +14,9 @@ class OAuthUser(HttpUser):
             verify=False,
             allow_redirects=False)
         if r.status_code == 302:
-            logging.info(r.headers['Location'])
+            parsed_redirect = urlparse(r.headers['Location'])
+            redirect_params = parse_qs(parsed_redirect.query)
+            auth_code = redirect_params.get('code')[0]
+            logging.info(f"Authorization_code: {auth_code}")
         else:
             logging.info("Auth_code endpoint did not redirect")
