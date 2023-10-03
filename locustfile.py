@@ -4,7 +4,6 @@ import logging
 from urllib.parse import urlparse, parse_qs
 
 
-
 class OAuthUser(HttpUser):
     @task
     def get_access_code(self):
@@ -13,10 +12,8 @@ class OAuthUser(HttpUser):
             auth=('admin', '12345'),
             verify=False,
             allow_redirects=False)
-        if r.status_code == 302:
-            parsed_redirect = urlparse(r.headers['Location'])
-            redirect_params = parse_qs(parsed_redirect.query)
-            auth_code = redirect_params.get('code')[0]
-            logging.info(f"Authorization_code: {auth_code}")
-        else:
-            logging.info("Auth_code endpoint did not redirect")
+        parsed_redirect = urlparse(r.headers['Location'])
+        redirect_params = parse_qs(parsed_redirect.query)
+        auth_code = redirect_params.get('code')[0]
+        logging.info(f"Authorization_code: {auth_code}")
+        #logging.info("Auth_code endpoint did not redirect")
