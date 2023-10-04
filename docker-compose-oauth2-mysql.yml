@@ -138,29 +138,31 @@
           gelf-address: "udp://localhost:12201"
           tag: "oauth2-refresh-token"
           env: "dev"
-    elasticsearch:
-      image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
-      environment:
-        - discovery.type=single-node
-      ports:
-        - 9200:9200
-    kibana:
-      image: docker.elastic.co/kibana/kibana:7.8.1
-      ports:
-        - 5601:5601
-      depends_on:
-        - elasticsearch
+    #elasticsearch:
+    #  image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
+    #  environment:
+    #    - discovery.type=single-node
+    #  ports:
+    #    - 9200:9200
+    #  volumes:
+    #    - /home/jnyyssol/light-docker/elasticsearch-data:/usr/share/elasticsearch/data
+    #kibana:
+    #  image: docker.elastic.co/kibana/kibana:7.8.1
+    #  ports:
+    #    - 5601:5601
+    #  depends_on:
+    #    - elasticsearch
     logstash:
       build: logstash/
       command: -f /etc/logstash/conf.d/
       volumes:
         - ./logstash/config:/etc/logstash/conf.d
+        - ./logstash/logs:/var/log/logstash/
       ports:
         - "12201:12201/udp"
-      links:
-        - elasticsearch
       environment:
         - LS_HEAP_SIZE=2048m
+
     prometheus:
       image: prom/prometheus:latest
       volumes:
@@ -189,5 +191,3 @@
   networks:
     localnet:
       external: true
-
-#Prometheus
