@@ -19,7 +19,7 @@ class OAuthClientRegistration(HttpUser):
             "redirectUri": "http://localhost:8000/authorization",
             "ownerId": "admin",  # TODO implement different users
             "host": "lightapi.net"
-        })
+        }, verify=False, allow_redirects=False)
 
         r = r.json()
         logging.info(f"Registered client: clientName = {r['clientName']}, clientId = {r['clientId']},\
