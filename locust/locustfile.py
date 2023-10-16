@@ -22,7 +22,7 @@ class OAuthClientRegistration(HttpUser):
         })
 
         r = r.json()
-        logging.info(f"Registered client: clientName = {r["clientName"]}, clientId = {r['clientId']},\
+        logging.info(f"Registered client: clientName = {r['clientName']}, clientId = {r['clientId']},\
         clientSecret = {r['clientSecret']}")
 
 
