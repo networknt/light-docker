@@ -2,7 +2,28 @@ from locust import HttpUser, task
 
 import logging
 from urllib.parse import urlparse, parse_qs
+from uuid import uuid4
 
+
+class OAuthClientRegistration(HttpUser):
+
+    @task
+    def register_client(self):
+        r = self.client.post("https://localhost:6884/oauth2/client", data=
+        {
+            "clientType": "public",  # TODO implement different types for different auth flows
+            "clientProfile": "mobile",  # TODO put different if important?
+            "clientName": uuid4(),
+            "clientDesc": uuid4(),
+            "scope": "read write",  # TODO implement different scopes
+            "redirectUri": "http://localhost:8000/authorization",
+            "ownerId": "admin",  # TODO implement different users
+            "host": "lightapi.net"
+        })
+
+        r = r.json()
+        logging.info(f"Registered client: clientName = {r["clientName"]}, clientId = {r['clientId']},\
+        clientSecret = {r['clientSecret']}")
 
 
 class OAuthUser(HttpUser):
