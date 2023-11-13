@@ -10,11 +10,13 @@ Client = namedtuple("Client", ["clientName", "clientId", "clientSecret"])
 
 
 class OAuthClientRegistration(HttpUser):
+
     fixed_count = 1
+    host = "https://localhost:6884"
 
     @task(1)
     def register_client(self):
-        r = self.client.post("https://localhost:6884/oauth2/client", data=
+        r = self.client.post("/oauth2/client", data=
         {
             "clientType": "public",  # TODO implement different types for different auth flows
             "clientProfile": "mobile",  # TODO put different if important?
@@ -72,6 +74,9 @@ class OAuthClientRegistration(HttpUser):
 
 
 class OAuthUser(HttpUser):
+
+    host = "https://localhost:6881"
+
     @task
     def get_access_code(self):
         r = self.client.get(
