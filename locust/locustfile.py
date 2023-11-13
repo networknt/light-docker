@@ -3,6 +3,10 @@ from locust import HttpUser, task
 import logging
 from urllib.parse import urlparse, parse_qs
 from uuid import uuid4
+from collections import namedtuple
+
+CLIENTS = set()
+Client = namedtuple("Client", ["clientName", "clientId", "clientSecret"])
 
 
 class OAuthClientRegistration(HttpUser):
@@ -26,6 +30,7 @@ class OAuthClientRegistration(HttpUser):
             r = r.json()
             logging.info(f"Registered client: clientName = {r['clientName']}, clientId = {r['clientId']},"
                          f" clientSecret = {r['clientSecret']}")
+            CLIENTS.add(Client(r['clientName'], r['clientId'], r['clientSecret']))
         else:
             logging.info("Client registration did not return code 200")
 
