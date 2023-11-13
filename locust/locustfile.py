@@ -13,8 +13,8 @@ class OAuthClientRegistration(HttpUser):
         {
             "clientType": "public",  # TODO implement different types for different auth flows
             "clientProfile": "mobile",  # TODO put different if important?
-            "clientName": uuid4(),
-            "clientDesc": uuid4(),
+            "clientName": str(uuid4())[:32],
+            "clientDesc": str(uuid4()),
             "scope": "read write",  # TODO implement different scopes
             "redirectUri": "http://localhost:8000/authorization",
             "ownerId": "admin",  # TODO implement different users
