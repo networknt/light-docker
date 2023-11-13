@@ -6,6 +6,7 @@ from uuid import uuid4
 
 
 class OAuthClientRegistration(HttpUser):
+    fixed_count = 1
 
     @task
     def register_client(self):
