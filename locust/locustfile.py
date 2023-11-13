@@ -21,9 +21,12 @@ class OAuthClientRegistration(HttpUser):
             "host": "lightapi.net"
         }, verify=False, allow_redirects=False)
 
-        r = r.json()
-        logging.info(f"Registered client: clientName = {r['clientName']}, clientId = {r['clientId']},\
-        clientSecret = {r['clientSecret']}")
+        if r.status_code == 200:
+            r = r.json()
+            logging.info(f"Registered client: clientName = {r['clientName']}, clientId = {r['clientId']},"
+                         " clientSecret = {r['clientSecret']}")
+        else:
+            logging.info("Client registration did not return code 200")
 
 
 class OAuthUser(HttpUser):
