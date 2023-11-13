@@ -53,6 +53,7 @@ class OAuthClientRegistration(HttpUser):
                          f" clientSecret = {c.clientSecret}")
         else:
             logging.info('Client deletion did not return code 200')
+            CLIENTS.add(c)
 
     @task(0)
     def get_client(self):
