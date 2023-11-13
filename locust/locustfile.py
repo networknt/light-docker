@@ -12,7 +12,7 @@ Client = namedtuple("Client", ["clientName", "clientId", "clientSecret"])
 class OAuthClientRegistration(HttpUser):
     fixed_count = 1
 
-    @task
+    @task(1)
     def register_client(self):
         r = self.client.post("https://localhost:6884/oauth2/client", data=
         {
@@ -33,6 +33,42 @@ class OAuthClientRegistration(HttpUser):
             CLIENTS.add(Client(r['clientName'], r['clientId'], r['clientSecret']))
         else:
             logging.info("Client registration did not return code 200")
+
+    @task(0)
+    def update_client(self):
+        pass
+
+    @task(0)
+    def delete_client(self):
+        pass
+
+    @task(0)
+    def get_client(self):
+        pass
+
+    @task(0)
+    def get_all_clients(self):
+        pass
+
+    @task(0)
+    def link_service(self):
+        pass
+
+    @task(0)
+    def delete_service(self):
+        pass
+
+    @task(0)
+    def delete_all_services(self):
+        pass
+
+    @task(0)
+    def get_service(self):
+        pass
+
+    @task(0)
+    def get_all_services(self):
+        pass
 
 
 class OAuthUser(HttpUser):
