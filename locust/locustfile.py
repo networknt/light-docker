@@ -25,7 +25,7 @@ class OAuthClientRegistration(HttpUser):
         if r.status_code == 200:
             r = r.json()
             logging.info(f"Registered client: clientName = {r['clientName']}, clientId = {r['clientId']},"
-                         " clientSecret = {r['clientSecret']}")
+                         f" clientSecret = {r['clientSecret']}")
         else:
             logging.info("Client registration did not return code 200")
 
