@@ -1,4 +1,5 @@
 from locust import HttpUser, task
+from locust.exception import RescheduleTask
 
 import logging
 from urllib.parse import urlparse, parse_qs
@@ -40,9 +41,18 @@ class OAuthClientRegistration(HttpUser):
     def update_client(self):
         pass
 
-    @task(0)
+    @task(1)
     def delete_client(self):
-        pass
+        try:
+            c = CLIENTS.pop()
+        except KeyError:
+            raise RescheduleTask()
+        r = self.client.delete(f"/oauth2/client/{c.clientId}", verify=False, allow_redirects=False)
+        if r.status_code == 200:
+            logging.info(f"Deleted client: clientName = {c.clientName}, clientId = {c.clientId},"
+                         f" clientSecret = {c.clientSecret}")
+        else:
+            logging.info('Client deletion did not return code 200')
 
     @task(0)
     def get_client(self):
