@@ -40,10 +40,10 @@ class OAuthClientRegistration(HttpUser):
             }, verify=False, allow_redirects=False, catch_response=True) as r:
 
                 if r.status_code == 200:
-                    r = r.json()
-                    logging.info(f"Registered client: clientName = {r['clientName']}, clientId = {r['clientId']},"
-                                 f" clientSecret = {r['clientSecret']}")
-                    CLIENTS.add(Client(r['clientName'], r['clientId'], r['clientSecret']))
+                    t = r.json()
+                    logging.info(f"Registered client: clientName = {t['clientName']}, clientId = {t['clientId']},"
+                                 f" clientSecret = {t['clientSecret']}")
+                    CLIENTS.add(Client(t['clientName'], t['clientId'], t['clientSecret']))
                     r.success()
                 else:
                     logging.info("Client registration did not return code 200")
