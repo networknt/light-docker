@@ -27,7 +27,7 @@ class OAuthClientRegistration(HttpUser):
         @task(1)
         @tag('correct', 'register', '200')
         def register_client_200(self):
-            r = self.client.post("/oauth2/client", data=
+            with self.client.post("/oauth2/client", data=
             {
                 "clientType": "public",  # TODO implement different types for different auth flows
                 "clientProfile": "mobile",  # TODO put different if important?
@@ -37,21 +37,23 @@ class OAuthClientRegistration(HttpUser):
                 "redirectUri": "http://localhost:8000/authorization",
                 "ownerId": "admin",  # TODO implement different users
                 "host": "lightapi.net"
-            }, verify=False, allow_redirects=False)
+            }, verify=False, allow_redirects=False, catch_response=True) as r:
 
-            if r.status_code == 200:
-                r = r.json()
-                logging.info(f"Registered client: clientName = {r['clientName']}, clientId = {r['clientId']},"
-                             f" clientSecret = {r['clientSecret']}")
-                CLIENTS.add(Client(r['clientName'], r['clientId'], r['clientSecret']))
-            else:
-                logging.info("Client registration did not return code 200")
-            self.interrupt()
+                if r.status_code == 200:
+                    r = r.json()
+                    logging.info(f"Registered client: clientName = {r['clientName']}, clientId = {r['clientId']},"
+                                 f" clientSecret = {r['clientSecret']}")
+                    CLIENTS.add(Client(r['clientName'], r['clientId'], r['clientSecret']))
+                    r.success()
+                else:
+                    logging.info("Client registration did not return code 200")
+                    r.failure()
+                self.interrupt()
 
         @task(1)
         @tag('error', 'register', '400')
         def register_client_400(self):
-            r = self.client.post("/oauth2/client", data=
+            with self.client.post("/oauth2/client", data=
             {
                 "clientType": "none",  # Error here
                 "clientProfile": "mobile",
@@ -61,18 +63,20 @@ class OAuthClientRegistration(HttpUser):
                 "redirectUri": "http://localhost:8000/authorization",
                 "ownerId": "admin",
                 "host": "lightapi.net"
-            }, verify=False, allow_redirects=False)
+            }, verify=False, allow_redirects=False, catch_response=True) as r:
 
-            if r.status_code == 400:
-                logging.info(f"Client Registration: error code 400 returned as expected (wrong clientType)")
-            else:
-                logging.info("Client Registration: did not return code 400")
-            self.interrupt()
+                if r.status_code == 400:
+                    logging.info(f"Client Registration: error code 400 returned as expected (wrong clientType)")
+                    r.success()
+                else:
+                    logging.info("Client Registration: did not return code 400")
+                    r.failure()
+                self.interrupt()
 
         @task(1)
         @tag('error', 'register', '404')
         def register_client_404(self):
-            r = self.client.post("/oauth2/client", data=
+            with self.client.post("/oauth2/client", data=
             {
                 "clientType": "public",
                 "clientProfile": "mobile",
@@ -82,13 +86,15 @@ class OAuthClientRegistration(HttpUser):
                 "redirectUri": "http://localhost:8000/authorization",
                 "ownerId": "nouser",  # Error here
                 "host": "lightapi.net"
-            }, verify=False, allow_redirects=False)
+            }, verify=False, allow_redirects=False) as r:
 
-            if r.status_code == 404:
-                logging.info("Client Registration: error code 404 returned as expected (non-existent user)")
-            else:
-                logging.info("Client Registration: did not return code 404")
-            self.interrupt()
+                if r.status_code == 404:
+                    logging.info("Client Registration: error code 404 returned as expected (non-existent user)")
+                    r.success()
+                else:
+                    logging.info("Client Registration: did not return code 404")
+                    r.failure()
+                self.interrupt()
 
     @task(0)
     def update_client(self):
