@@ -47,7 +47,7 @@ class OAuthClientRegistration(HttpUser):
                     r.success()
                 else:
                     logging.info("Client registration did not return code 200")
-                    r.failure()
+                    r.failure("Client registration did not return code 200")
                 self.interrupt()
 
         @task(1)
@@ -70,7 +70,7 @@ class OAuthClientRegistration(HttpUser):
                     r.success()
                 else:
                     logging.info("Client Registration: did not return code 400")
-                    r.failure()
+                    r.failure("Client Registration: did not return code 400")
                 self.interrupt()
 
         @task(1)
@@ -93,7 +93,7 @@ class OAuthClientRegistration(HttpUser):
                     r.success()
                 else:
                     logging.info("Client Registration: did not return code 404")
-                    r.failure()
+                    r.failure("Client Registration: did not return code 404")
                 self.interrupt()
 
     @task(0)
