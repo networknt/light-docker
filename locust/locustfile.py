@@ -86,7 +86,7 @@ class OAuthClientRegistration(HttpUser):
                 "redirectUri": "http://localhost:8000/authorization",
                 "ownerId": "nouser",  # Error here
                 "host": "lightapi.net"
-            }, verify=False, allow_redirects=False) as r:
+            }, verify=False, allow_redirects=False, catch_response=True) as r:
 
                 if r.status_code == 404:
                     logging.info("Client Registration: error code 404 returned as expected (non-existent user)")
