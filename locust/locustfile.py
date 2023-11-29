@@ -6,6 +6,8 @@ from urllib.parse import urlparse, parse_qs
 from uuid import uuid4
 from collections import namedtuple
 
+#Documentation: https://doc.networknt.com/service/oauth/service/client/
+
 CLIENTS = set()
 Client = namedtuple("Client", ["clientName", "clientId", "clientSecret"])
 
@@ -52,7 +54,7 @@ class OAuthClientRegistration(HttpUser):
 
         @task(1)
         @tag('error', 'register', '400')
-        def register_client_400(self):
+        def register_client_400_clientType(self):
             with self.client.post("/oauth2/client", data=
             {
                 "clientType": "none",  # Error here
@@ -69,8 +71,33 @@ class OAuthClientRegistration(HttpUser):
                     logging.info(f"Client Registration: error code 400 returned as expected (wrong clientType)")
                     r.success()
                 else:
-                    logging.info("Client Registration: did not return code 400")
-                    r.failure("Client Registration: did not return code 400")
+                    failure_str = "Client Registration: did not return code 400 (clientType). Instead: " + str(r.status_code) 
+                    logging.info(failure_str)
+                    r.failure(failure_str)
+                self.interrupt()
+
+        @task(1)
+        @tag('error', 'register', '400')
+        def register_client_400_clientProfile(self):
+            with self.client.post("/oauth2/client", data=
+            {
+                "clientType": "public",
+                "clientProfile": "none",
+                "clientName": str(uuid4())[:32],
+                "clientDesc": str(uuid4()),
+                "scope": "read write",
+                "redirectUri": "http://localhost:8000/authorization",
+                "ownerId": "admin",
+                "host": "lightapi.net"
+            }, verify=False, allow_redirects=False, catch_response=True) as r:
+
+                if r.status_code == 400:
+                    logging.info(f"Client Registration: error code 400 returned as expected (wrong clientProfile)")
+                    r.success()
+                else:
+                    failure_str = "Client Registration: did not return code 400 (clientProfile). Instead: " + str(r.status_code) 
+                    logging.info(failure_str)
+                    r.failure(failure_str)
                 self.interrupt()
 
         @task(1)
@@ -87,18 +114,80 @@ class OAuthClientRegistration(HttpUser):
                 "ownerId": "nouser",  # Error here
                 "host": "lightapi.net"
             }, verify=False, allow_redirects=False, catch_response=True) as r:
-
                 if r.status_code == 404:
                     logging.info("Client Registration: error code 404 returned as expected (non-existent user)")
                     r.success()
                 else:
-                    logging.info("Client Registration: did not return code 404")
-                    r.failure("Client Registration: did not return code 404")
+                    failure_str = "Client Registration: did not return code 404. Instead: " + str(r.status_code)
+                    logging.info(failure_str)
+                    r.failure(failure_str)
                 self.interrupt()
 
-    @task(0)
+
+
+    @task(1)
+    @tag('correct', 'update', '200')
     def update_client(self):
-        pass
+        try:
+            c = CLIENTS.pop()
+        except KeyError:
+            #logging.info("No clients available to update")
+            raise RescheduleTask()
+        
+        updated_data = {
+            "clientId": c.clientId,
+            "clientType": "public",  # Assuming 'public' is a valid clientType
+            "clientProfile": "mobile",  
+            "clientName": str(uuid4())[:32],
+            "clientDesc": str(uuid4()),
+            "scope": "read write",
+            "redirectUri": "http://localhost:8000/authorization",
+            "ownerId": "admin",  # Assuming 'admin' is a valid ownerId
+            "host": "lightapi.net"
+        }
+
+        with self.client.put("/oauth2/client", json=updated_data, verify=False, allow_redirects=False, catch_response=True) as r:
+            if r.status_code == 200:
+                logging.info(f"Updated client: clientId = {updated_data['clientId']}")
+                CLIENTS.add(Client(updated_data['clientName'], c.clientId, c.clientSecret)) #for the stored client tuple, only name changes
+                r.success()
+            else:
+                CLIENTS.add(c)
+                logging.info(f"Client update failed with unexpected status code: {r.status_code}")
+                r.failure(f"Client update failed with unexpected status code: {r.status_code}")
+
+    
+    @task(1)
+    @tag('error', 'update', '200')
+    def update_client_404(self):
+        try:
+            c = CLIENTS.pop()
+        except KeyError:
+            #logging.info("No clients available to update")
+            raise RescheduleTask()
+        
+        updated_data = {
+            "clientId": "",
+            "clientType": "public",  # Assuming 'public' is a valid clientType
+            "clientProfile": "mobile",  
+            "clientName": str(uuid4())[:32],
+            "clientDesc": str(uuid4()),
+            "scope": "read write",
+            "redirectUri": "http://localhost:8000/authorization",
+            "ownerId": "admin",  # Assuming 'admin' is a valid ownerId
+            "host": "lightapi.net"
+        }
+
+        with self.client.put("/oauth2/client", json=updated_data, verify=False, allow_redirects=False, catch_response=True) as r:
+            if r.status_code == 404:
+                logging.info(f"Client update without id failed as expected, 404")
+                CLIENTS.add(c) 
+                r.success()
+            else:
+                CLIENTS.add(c)
+                failstr = str(f"Unexpected status code when updating client without id: {r.status_code}")
+                logging.info(failstr)
+                r.failure(failstr)
 
     @task(1)
     def delete_client(self):
@@ -114,17 +203,96 @@ class OAuthClientRegistration(HttpUser):
             logging.info('Client deletion did not return code 200')
             CLIENTS.add(c)
 
-    @task(0)
-    def get_client(self):
-        pass
+    @task(1)
+    @tag('error', 'client', '404')
+    def delete_client_404(self):
+        with self.client.delete(f"/oauth2/client/not_a_client_id", verify=False, allow_redirects=False, catch_response=True) as r:
+            if r.status_code == 404:
+                logging.info("Client deletion: error code 404 returned as expected (non-existent user)")
+                r.success()
+            else:
+                failure_str = "Client deletion: did not return code 404. Instead: " + str(r.status_code)
+                logging.info(failure_str)
+                r.failure(failure_str)
 
+
+
+    @task(1)
+    @tag('correct', 'get', '200')
+    def get_client(self):
+        try:
+            c = CLIENTS.pop()
+        except KeyError:
+            raise RescheduleTask()
+        r = self.client.get(f"/oauth2/client/{c.clientId}", verify=False, allow_redirects=False)
+        if r.status_code == 200:
+            logging.info(f"Got client: clientName = {c.clientName}, clientId = {c.clientId},"
+                         f" clientSecret = {c.clientSecret}")
+        else:
+            logging.info(f'Client get did not return code 200. Instead: {r.status_code}')
+        CLIENTS.add(c)
+
+    @task(1)
+    @tag('error', 'get', '404')
+    def get_client_404(self):
+        with self.client.get(f"/oauth2/client/none", verify=False, allow_redirects=False, catch_response=True) as r:
+            if r.status_code == 404:
+                logging.info("Tried to get client with bad id, status 404 as expected.")
+                r.success()
+            else:
+                failure_str = str(f'Get client with bad id got unexpected status code {r.status_code}')
+                logging.info(failure_str)
+                r.failure(failure_str)
+
+
+    @task(1)
+    @tag('correct', 'get', '200')
+    def get_client_page(self):
+        r = self.client.get(f"/oauth2/client", params={'page': '1'}, verify=False, allow_redirects=False)
+        if r.status_code == 200:
+            logging.info(f"Got client page with status_code 200.")
+        else:
+            logging.info(f'Client page get did not return code 200. Instead: {r.status_code}')
+
+    @task(1)
+    @tag('error', 'get', '400')
+    def get_client_page_400(self):
+        with self.client.get("/oauth2/client", params={}, verify=False, allow_redirects=False, catch_response=True) as r:
+            if r.status_code == 400:
+                logging.info("Called client page without page, status 400 as expected.")
+                r.success()
+            else:
+                failure_str = "Client page get did not return code 400. Instead: " + str(r.status_code)
+                logging.info(failure_str)
+                r.failure(failure_str)
+
+    #If I understood correctly there isn't "all all" just all from page
     @task(0)
     def get_all_clients(self):
         pass
 
-    @task(0)
+
+    #Basically a template, doesn't work yet
+    @task(1)
+    @tag('link', 'service')
     def link_service(self):
-        pass
+        clientId = 'test'
+        serviceId = 'test'
+        endpoints = ['endpoint1', 'endpoint2', 'endpoint3']
+
+        
+        with self.client.post(f"/oauth2/client/{clientId}/service/{serviceId}", 
+                            json=endpoints,
+                            verify=False,
+                            allow_redirects=False,
+                            catch_response=True) as r:
+            if r.status_code == 200:
+                logging.info(f"Service link success, 200")
+                r.success()
+            else:
+                failure_str = str(f"Service link failed: {r.text}")
+                logging.info(failure_str)
+                r.failure(failure_str)
 
     @task(0)
     def delete_service(self):
