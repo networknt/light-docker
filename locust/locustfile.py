@@ -130,4 +130,6 @@ class OAuthUser(HttpUser):
             self.access_token = r['access_token']
             logging.info(f"Access Token Client Credentials Flow: ClientId = {self.cl.clientId}, Access Token = {self.access_token}")
         else:
-            logging.info(f"Access Token Client Credentials Flow: Did not get code 200, code is {r.status_code}")
+            r = r.json()
+            logging.info(f"Access Token Client Credentials Flow: Did not get code 200, code is {r['statusCode']}, "
+                         f"error code is {r['code']}")
