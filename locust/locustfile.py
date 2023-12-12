@@ -95,13 +95,15 @@ class OAuthUser(HttpUser):
     host = "https://localhost:6882"
 
     def on_start(self):
-        self.cl = set_choice(CLIENTS)
         self.code_host = "https://localhost:6881"
         self.token_host = "https://localhost:6882"
         self.auth_code = None
+        self.access_token = None
+        self.cl = None
 
     @task
     def get_access_code(self):
+        self.cl = set_choice(CLIENTS)
         r = self.client.get(
             f"{self.code_host}/oauth2/code?response_type=code&client_id={self.cl.clientId}&redirect_uri=http://localhost:8080/authorization",
             auth=('admin', '123456'),
@@ -117,6 +119,7 @@ class OAuthUser(HttpUser):
 
     @task
     def access_token_client_credentials_flow(self):
+        self.cl = set_choice(CLIENTS)
         r = self.client.post(
             f"{self.token_host}/oauth2/token", params={"grant_type": "client_credentials"},
             auth=(self.cl.clientId, self.cl.clientSecret),
