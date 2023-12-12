@@ -112,3 +112,15 @@ class OAuthUser(HttpUser):
             logging.info(f"Auth Code: ClientId = {self.cl.clientId}, Authorization_code = {self.auth_code}")
         else:
             logging.info("Auth Code: Endpoint did not redirect")
+
+    @task
+    def access_token_client_credentials_flow(self):
+        r = self.client.post(
+            f"{self.token_host}/oauth2/token", params={"grant_type": "client_credentials"},
+            auth=(self.cl.clientId, self.cl.clientSecret),
+            verify=False,
+            allow_redirects=False)
+        if r.status_code == 302:
+            r = r.json()
+            self.access_token = r['access_token']
+            logging.info(f"Access Token Client Credentials Flow: ClientId = {self.cl.clientId}, Access Token = {self.access_token}")
