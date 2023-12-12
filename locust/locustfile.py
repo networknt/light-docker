@@ -122,7 +122,7 @@ class OAuthUser(HttpUser):
             auth=(self.cl.clientId, self.cl.clientSecret),
             verify=False,
             allow_redirects=False)
-        if r.status_code == 302:
+        if r.status_code == 200:
             r = r.json()
             self.access_token = r['access_token']
             logging.info(f"Access Token Client Credentials Flow: ClientId = {self.cl.clientId}, Access Token = {self.access_token}")
