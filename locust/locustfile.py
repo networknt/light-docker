@@ -121,7 +121,7 @@ class OAuthUser(HttpUser):
     def access_token_client_credentials_flow(self):
         self.cl = set_choice(CLIENTS)
         r = self.client.post(
-            f"{self.token_host}/oauth2/token", params={"grant_type": "client_credentials"},
+            f"{self.token_host}/oauth2/token", data={"grant_type": "client_credentials"},
             auth=(self.cl.clientId, self.cl.clientSecret),
             verify=False,
             allow_redirects=False)
