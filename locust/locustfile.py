@@ -96,7 +96,7 @@ class OAuthUser(HttpUser):
     def on_start(self):
         self.cl = set_choice(CLIENTS)
         self.code_host = "https://localhost:6881"
-        self.token_host = "htpps://localhost:6882"
+        self.token_host = "https://localhost:6882"
 
     @task
     def get_access_code(self):
