@@ -92,15 +92,16 @@ class OAuthClientRegistration(HttpUser):
 
 class OAuthUser(HttpUser):
 
-    host = "https://localhost:6881"
 
     def on_start(self):
         self.client = set_choice(CLIENTS)
+        self.code_host = "https://localhost:6881"
+        self.token_host = "htpps://localhost:6882"
 
     @task
     def get_access_code(self):
         r = self.client.get(
-            f"/oauth2/code?response_type=code&client_id={self.client.clientId}&redirect_uri=http://localhost:8080/authorization",
+            f"{self.code_host}/oauth2/code?response_type=code&client_id={self.client.clientId}&redirect_uri=http://localhost:8080/authorization",
             auth=('admin', '123456'),
             verify=False,
             allow_redirects=False)
