@@ -142,4 +142,25 @@ class OAuthUser(HttpUser):
                 logging.info(f"Auth Code: ClientId = {self.user.cl.clientId}, Authorization_code = {self.user.auth_code}")
             else:
                 logging.info("Auth Code: Endpoint did not redirect")
+
+        @task
+        def access_token_authorization_code_flow(self):
+            r = self.client.post(
+                f"{self.user.token_host}/oauth2/token", data={
+                    "grant_type": "client_credentials",
+                    "code": self.user.auth_code,
+                    "redirect_uri": "http://localhost:8080/authorization"
+                },
+                auth=(self.user.cl.clientId, self.user.cl.clientSecret),
+                verify=False,
+                allow_redirects=False)
+            if r.status_code == 200:
+                r = r.json()
+                self.user.access_token = r['access_token']
+                logging.info(
+                    f"Access Token Authorization Code Flow: ClientId = {self.user.cl.clientId}, Access Token = {self.user.access_token}")
+            else:
+                r = r.json()
+                logging.info(f"Access Token Authorization Code Flow: Did not get code 200, code is {r['statusCode']}, "
+                             f"error code is {r['code']}")
             self.interrupt()
