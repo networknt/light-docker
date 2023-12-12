@@ -163,4 +163,5 @@ class OAuthUser(HttpUser):
                 r = r.json()
                 logging.info(f"Access Token Authorization Code Flow: Did not get code 200, code is {r['statusCode']}, "
                              f"error code is {r['code']}")
+            self.user.auth_code = None
             self.interrupt()
