@@ -92,11 +92,11 @@ class OAuthClientRegistration(HttpUser):
 
 class OAuthUser(HttpUser):
 
-
     def on_start(self):
         self.cl = set_choice(CLIENTS)
         self.code_host = "https://localhost:6881"
         self.token_host = "https://localhost:6882"
+        self.auth_code = None
 
     @task
     def get_access_code(self):
