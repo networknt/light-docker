@@ -1,4 +1,4 @@
-from locust import HttpUser, task
+from locust import HttpUser, task, SequentialTaskSet
 from locust.exception import RescheduleTask
 
 import logging
@@ -95,27 +95,11 @@ class OAuthUser(HttpUser):
     host = "https://localhost:6882"
 
     def on_start(self):
-        self.code_host = "https://localhost:6881"
         self.token_host = "https://localhost:6882"
+        self.code_host = "https://localhost:6881"
         self.auth_code = None
         self.access_token = None
         self.cl = None
-
-    @task
-    def get_access_code(self):
-        self.cl = set_choice(CLIENTS)
-        r = self.client.get(
-            f"{self.code_host}/oauth2/code?response_type=code&client_id={self.cl.clientId}&redirect_uri=http://localhost:8080/authorization",
-            auth=('admin', '123456'),
-            verify=False,
-            allow_redirects=False)
-        if r.status_code == 302:
-            parsed_redirect = urlparse(r.headers['Location'])
-            redirect_params = parse_qs(parsed_redirect.query)
-            self.auth_code = redirect_params.get('code')[0]
-            logging.info(f"Auth Code: ClientId = {self.cl.clientId}, Authorization_code = {self.auth_code}")
-        else:
-            logging.info("Auth Code: Endpoint did not redirect")
 
     @task
     def access_token_client_credentials_flow(self):
@@ -133,3 +117,29 @@ class OAuthUser(HttpUser):
             r = r.json()
             logging.info(f"Access Token Client Credentials Flow: Did not get code 200, code is {r['statusCode']}, "
                          f"error code is {r['code']}")
+
+    @task
+    class AuthorizationCodeFlow(SequentialTaskSet):
+
+        def on_start(self):
+            self.cl = set_choice(CLIENTS)
+
+        @task
+        def access_code(self):
+            r = self.client.get(
+                f"{self.user.code_host}/oauth2/code", params={
+                    "response_type": "code",
+                    "client_id": self.user.cl.clientId,
+                    "redirect_uri": "http://localhost:8080/authorization"
+                },
+                auth=('admin', '123456'),
+                verify=False,
+                allow_redirects=False)
+            if r.status_code == 302:
+                parsed_redirect = urlparse(r.headers['Location'])
+                redirect_params = parse_qs(parsed_redirect.query)
+                self.user.auth_code = redirect_params.get('code')[0]
+                logging.info(f"Auth Code: ClientId = {self.user.cl.clientId}, Authorization_code = {self.user.auth_code}")
+            else:
+                logging.info("Auth Code: Endpoint did not redirect")
+            self.interrupt()
