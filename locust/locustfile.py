@@ -94,11 +94,13 @@ class OAuthUser(HttpUser):
 
     host = "https://localhost:6881"
 
+    def on_start(self):
+        self.client = set_choice(CLIENTS)
+
     @task
     def get_access_code(self):
-        c = set_choice(CLIENTS)
         r = self.client.get(
-            f"/oauth2/code?response_type=code&client_id={c.clientId}&redirect_uri=http://localhost:8080/authorization",
+            f"/oauth2/code?response_type=code&client_id={self.client.clientId}&redirect_uri=http://localhost:8080/authorization",
             auth=('admin', '123456'),
             verify=False,
             allow_redirects=False)
@@ -106,6 +108,6 @@ class OAuthUser(HttpUser):
             parsed_redirect = urlparse(r.headers['Location'])
             redirect_params = parse_qs(parsed_redirect.query)
             auth_code = redirect_params.get('code')[0]
-            logging.info(f"Auth Code: ClientId = {c.clientId}, Authorization_code = {auth_code}")
+            logging.info(f"Auth Code: ClientId = {self.client.clientId}, Authorization_code = {auth_code}")
         else:
             logging.info("Auth Code: Endpoint did not redirect")
