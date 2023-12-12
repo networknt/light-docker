@@ -92,6 +92,8 @@ class OAuthClientRegistration(HttpUser):
 
 class OAuthUser(HttpUser):
 
+    host = "https://localhost:6882"
+
     def on_start(self):
         self.cl = set_choice(CLIENTS)
         self.code_host = "https://localhost:6881"
