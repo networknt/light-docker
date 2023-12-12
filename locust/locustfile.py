@@ -107,7 +107,7 @@ class OAuthUser(HttpUser):
         if r.status_code == 302:
             parsed_redirect = urlparse(r.headers['Location'])
             redirect_params = parse_qs(parsed_redirect.query)
-            auth_code = redirect_params.get('code')[0]
-            logging.info(f"Auth Code: ClientId = {self.client.clientId}, Authorization_code = {auth_code}")
+            self.auth_code = redirect_params.get('code')[0]
+            logging.info(f"Auth Code: ClientId = {self.client.clientId}, Authorization_code = {self.auth_code}")
         else:
             logging.info("Auth Code: Endpoint did not redirect")
