@@ -228,31 +228,35 @@ class OAuthClientRegistration(HttpUser):
 
 
     @task(1)
-    @tag('correct', 'get', '200')
-    def get_client(self):
-        try:
-            c = CLIENTS.pop()
-        except KeyError:
-            raise RescheduleTask()
-        r = self.client.get(f"/oauth2/client/{c.clientId}", verify=False, allow_redirects=False)
-        if r.status_code == 200:
-            logging.info(f"Got client: clientName = {c.clientName}, clientId = {c.clientId},"
-                         f" clientSecret = {c.clientSecret}")
-        else:
-            logging.info(f'Client get did not return code 200. Instead: {r.status_code}')
-        CLIENTS.add(c)
-
-    @task(1)
-    @tag('error', 'get', '404')
-    def get_client_404(self):
-        with self.client.get(f"/oauth2/client/none", verify=False, allow_redirects=False, catch_response=True) as r:
-            if r.status_code == 404:
-                logging.info("Tried to get client with bad id, status 404 as expected.")
-                r.success()
+    class GetClient(TaskSet):
+        @task(1)
+        @tag('correct', 'get', '200')
+        def get_client_200(self):
+            try:
+                c = CLIENTS.pop()
+            except KeyError:
+                raise RescheduleTask()
+            r = self.client.get(f"/oauth2/client/{c.clientId}", verify=False, allow_redirects=False)
+            if r.status_code == 200:
+                logging.info(f"Got client: clientName = {c.clientName}, clientId = {c.clientId},"
+                             f" clientSecret = {c.clientSecret}")
             else:
-                failure_str = str(f'Get client with bad id got unexpected status code {r.status_code}')
-                logging.info(failure_str)
-                r.failure(failure_str)
+                logging.info(f'Client get did not return code 200. Instead: {r.status_code}')
+            CLIENTS.add(c)
+            self.interrupt()
+
+        @task(1)
+        @tag('error', 'get', '404')
+        def get_client_404(self):
+            with self.client.get(f"/oauth2/client/none", verify=False, allow_redirects=False, catch_response=True) as r:
+                if r.status_code == 404:
+                    logging.info("Tried to get client with bad id, status 404 as expected.")
+                    r.success()
+                else:
+                    failure_str = str(f'Get client with bad id got unexpected status code {r.status_code}')
+                    logging.info(failure_str)
+                    r.failure(failure_str)
+            self.interrupt()
 
 
     @task(1)
