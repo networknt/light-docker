@@ -12,12 +12,6 @@ CLIENTS = set()
 Client = namedtuple("Client", ["clientName", "clientId", "clientSecret"])
 
 
-def set_choice(s):
-    a = s.pop()
-    s.add(a)
-    return a
-
-
 class OAuthClientRegistration(HttpUser):
 
     fixed_count = 1
@@ -330,7 +324,11 @@ class OAuthUser(HttpUser):
 
     @task
     def access_token_client_credentials_flow(self):
-        self.cl = set_choice(CLIENTS)
+        try:
+            self.cl = CLIENTS.pop()
+        except KeyError:
+            raise RescheduleTask()
+
         r = self.client.post(
             f"{self.token_host}/oauth2/token", data={"grant_type": "client_credentials"},
             auth=(self.cl.clientId, self.cl.clientSecret),
@@ -344,12 +342,16 @@ class OAuthUser(HttpUser):
             r = r.json()
             logging.info(f"Access Token Client Credentials Flow: Did not get code 200, code is {r['statusCode']}, "
                          f"error code is {r['code']}")
+        CLIENTS.add(self.cl)
 
     @task
     class AuthorizationCodeFlow(SequentialTaskSet):
 
         def on_start(self):
-            self.cl = set_choice(CLIENTS)
+            try:
+                self.cl = CLIENTS.pop()
+            except KeyError:
+                raise RescheduleTask()
 
         @task
         def access_code(self):
@@ -392,3 +394,6 @@ class OAuthUser(HttpUser):
                              f"error code is {r['code']}")
             self.user.auth_code = None
             self.interrupt()
+
+        def on_stop(self):
+            CLIENTS.add(self.cl)
