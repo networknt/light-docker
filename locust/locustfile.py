@@ -126,68 +126,73 @@ class OAuthClientRegistration(HttpUser):
 
 
     @task(1)
-    @tag('correct', 'update', '200')
-    def update_client(self):
-        try:
-            c = CLIENTS.pop()
-        except KeyError:
-            #logging.info("No clients available to update")
-            raise RescheduleTask()
+    class UpdateClient(TaskSet):
 
-        updated_data = {
-            "clientId": c.clientId,
-            "clientType": "public",  # Assuming 'public' is a valid clientType
-            "clientProfile": "mobile",
-            "clientName": str(uuid4())[:32],
-            "clientDesc": str(uuid4()),
-            "scope": "read write",
-            "redirectUri": "http://localhost:8000/authorization",
-            "ownerId": "admin",  # Assuming 'admin' is a valid ownerId
-            "host": "lightapi.net"
-        }
+        @task(1)
+        @tag('correct', 'update', '200')
+        def update_client_200(self):
+            try:
+                c = CLIENTS.pop()
+            except KeyError:
+                #logging.info("No clients available to update")
+                raise RescheduleTask()
 
-        with self.client.put("/oauth2/client", json=updated_data, verify=False, allow_redirects=False, catch_response=True) as r:
-            if r.status_code == 200:
-                logging.info(f"Updated client: clientId = {updated_data['clientId']}")
-                CLIENTS.add(Client(updated_data['clientName'], c.clientId, c.clientSecret)) #for the stored client tuple, only name changes
-                r.success()
-            else:
-                CLIENTS.add(c)
-                logging.info(f"Client update failed with unexpected status code: {r.status_code}")
-                r.failure(f"Client update failed with unexpected status code: {r.status_code}")
+            updated_data = {
+                "clientId": c.clientId,
+                "clientType": "public",  # Assuming 'public' is a valid clientType
+                "clientProfile": "mobile",
+                "clientName": str(uuid4())[:32],
+                "clientDesc": str(uuid4()),
+                "scope": "read write",
+                "redirectUri": "http://localhost:8000/authorization",
+                "ownerId": "admin",  # Assuming 'admin' is a valid ownerId
+                "host": "lightapi.net"
+            }
+
+            with self.client.put("/oauth2/client", json=updated_data, verify=False, allow_redirects=False, catch_response=True) as r:
+                if r.status_code == 200:
+                    logging.info(f"Updated client: clientId = {updated_data['clientId']}")
+                    CLIENTS.add(Client(updated_data['clientName'], c.clientId, c.clientSecret)) #for the stored client tuple, only name changes
+                    r.success()
+                else:
+                    CLIENTS.add(c)
+                    logging.info(f"Client update failed with unexpected status code: {r.status_code}")
+                    r.failure(f"Client update failed with unexpected status code: {r.status_code}")
+                self.interrupt()
 
 
-    @task(1)
-    @tag('error', 'update', '200')
-    def update_client_404(self):
-        try:
-            c = CLIENTS.pop()
-        except KeyError:
-            #logging.info("No clients available to update")
-            raise RescheduleTask()
+        @task(1)
+        @tag('error', 'update', '404')
+        def update_client_404(self):
+            try:
+                c = CLIENTS.pop()
+            except KeyError:
+                #logging.info("No clients available to update")
+                raise RescheduleTask()
 
-        updated_data = {
-            "clientId": "",
-            "clientType": "public",  # Assuming 'public' is a valid clientType
-            "clientProfile": "mobile",
-            "clientName": str(uuid4())[:32],
-            "clientDesc": str(uuid4()),
-            "scope": "read write",
-            "redirectUri": "http://localhost:8000/authorization",
-            "ownerId": "admin",  # Assuming 'admin' is a valid ownerId
-            "host": "lightapi.net"
-        }
+            updated_data = {
+                "clientId": "",
+                "clientType": "public",  # Assuming 'public' is a valid clientType
+                "clientProfile": "mobile",
+                "clientName": str(uuid4())[:32],
+                "clientDesc": str(uuid4()),
+                "scope": "read write",
+                "redirectUri": "http://localhost:8000/authorization",
+                "ownerId": "admin",  # Assuming 'admin' is a valid ownerId
+                "host": "lightapi.net"
+            }
 
-        with self.client.put("/oauth2/client", json=updated_data, verify=False, allow_redirects=False, catch_response=True) as r:
-            if r.status_code == 404:
-                logging.info(f"Client update without id failed as expected, 404")
-                CLIENTS.add(c)
-                r.success()
-            else:
-                CLIENTS.add(c)
-                failstr = str(f"Unexpected status code when updating client without id: {r.status_code}")
-                logging.info(failstr)
-                r.failure(failstr)
+            with self.client.put("/oauth2/client", json=updated_data, verify=False, allow_redirects=False, catch_response=True) as r:
+                if r.status_code == 404:
+                    logging.info(f"Client update without id failed as expected, 404")
+                    CLIENTS.add(c)
+                    r.success()
+                else:
+                    CLIENTS.add(c)
+                    failstr = str(f"Unexpected status code when updating client without id: {r.status_code}")
+                    logging.info(failstr)
+                    r.failure(failstr)
+            self.interrupt()
 
     @task(1)
     def delete_client(self):
