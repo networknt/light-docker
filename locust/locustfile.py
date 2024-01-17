@@ -6,7 +6,7 @@ from urllib.parse import urlparse, parse_qs
 from uuid import uuid4
 from collections import namedtuple
 
-#Documentation: https://doc.networknt.com/service/oauth/service/client/
+# Documentation: https://doc.networknt.com/service/oauth/service/client/
 
 CLIENTS = set()
 Client = namedtuple("Client", ["clientName", "clientId", "clientSecret"])
@@ -122,7 +122,6 @@ class OAuthClientRegistration(HttpUser):
                     logging.info(failure_str)
                     r.failure(failure_str)
                 self.interrupt()
-
 
     @task(1)
     class UpdateClient(TaskSet):
