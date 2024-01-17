@@ -124,7 +124,6 @@ class OAuthClientRegistration(HttpUser):
                 self.interrupt()
 
 
-
     @task(1)
     class UpdateClient(TaskSet):
 
@@ -194,7 +193,6 @@ class OAuthClientRegistration(HttpUser):
                     r.failure(failstr)
             self.interrupt()
 
-
     @task(1)
     class DeleteClient(TaskSet):
         @task(1)
@@ -225,7 +223,6 @@ class OAuthClientRegistration(HttpUser):
                     logging.info(failure_str)
                     r.failure(failure_str)
             self.interrupt()
-
 
     @task(1)
     class GetClient(TaskSet):
@@ -258,27 +255,30 @@ class OAuthClientRegistration(HttpUser):
                     r.failure(failure_str)
             self.interrupt()
 
-
     @task(1)
-    @tag('correct', 'get', '200')
-    def get_client_page(self):
-        r = self.client.get(f"/oauth2/client", params={'page': '1'}, verify=False, allow_redirects=False)
-        if r.status_code == 200:
-            logging.info(f"Got client page with status_code 200.")
-        else:
-            logging.info(f'Client page get did not return code 200. Instead: {r.status_code}')
-
-    @task(1)
-    @tag('error', 'get', '400')
-    def get_client_page_400(self):
-        with self.client.get("/oauth2/client", params={}, verify=False, allow_redirects=False, catch_response=True) as r:
-            if r.status_code == 400:
-                logging.info("Called client page without page, status 400 as expected.")
-                r.success()
+    class GetClientPage(TaskSet):
+        @task(1)
+        @tag('correct', 'get', '200')
+        def get_client_page_200(self):
+            r = self.client.get(f"/oauth2/client", params={'page': '1'}, verify=False, allow_redirects=False)
+            if r.status_code == 200:
+                logging.info(f"Got client page with status_code 200.")
             else:
-                failure_str = "Client page get did not return code 400. Instead: " + str(r.status_code)
-                logging.info(failure_str)
-                r.failure(failure_str)
+                logging.info(f'Client page get did not return code 200. Instead: {r.status_code}')
+            self.interrupt()
+
+        @task(1)
+        @tag('error', 'get', '400')
+        def get_client_page_400(self):
+            with self.client.get("/oauth2/client", params={}, verify=False, allow_redirects=False, catch_response=True) as r:
+                if r.status_code == 400:
+                    logging.info("Called client page without page, status 400 as expected.")
+                    r.success()
+                else:
+                    failure_str = "Client page get did not return code 400. Instead: " + str(r.status_code)
+                    logging.info(failure_str)
+                    r.failure(failure_str)
+            self.interrupt()
 
     #If I understood correctly there isn't "all all" just all from page
     @task(0)
