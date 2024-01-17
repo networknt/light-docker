@@ -280,14 +280,13 @@ class OAuthClientRegistration(HttpUser):
                     r.failure(failure_str)
             self.interrupt()
 
-    #Basically a template, doesn't work yet
-    @task(1)
+    # Basically a template, doesn't work yet
+    @task(0)
     @tag('link', 'service')
     def link_service(self):
         clientId = 'test'
         serviceId = 'test'
         endpoints = ['endpoint1', 'endpoint2', 'endpoint3']
-
 
         with self.client.post(f"/oauth2/client/{clientId}/service/{serviceId}",
                             json=endpoints,
