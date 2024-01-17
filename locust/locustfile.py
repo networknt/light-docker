@@ -280,12 +280,6 @@ class OAuthClientRegistration(HttpUser):
                     r.failure(failure_str)
             self.interrupt()
 
-    #If I understood correctly there isn't "all all" just all from page
-    @task(0)
-    def get_all_clients(self):
-        pass
-
-
     #Basically a template, doesn't work yet
     @task(1)
     @tag('link', 'service')
