@@ -194,32 +194,37 @@ class OAuthClientRegistration(HttpUser):
                     r.failure(failstr)
             self.interrupt()
 
-    @task(1)
-    def delete_client(self):
-        try:
-            c = CLIENTS.pop()
-        except KeyError:
-            raise RescheduleTask()
-        r = self.client.delete(f"/oauth2/client/{c.clientId}", verify=False, allow_redirects=False)
-        if r.status_code == 200:
-            logging.info(f"Deleted client: clientName = {c.clientName}, clientId = {c.clientId},"
-                         f" clientSecret = {c.clientSecret}")
-        else:
-            logging.info('Client deletion did not return code 200')
-            CLIENTS.add(c)
 
     @task(1)
-    @tag('error', 'client', '404')
-    def delete_client_404(self):
-        with self.client.delete(f"/oauth2/client/not_a_client_id", verify=False, allow_redirects=False, catch_response=True) as r:
-            if r.status_code == 404:
-                logging.info("Client deletion: error code 404 returned as expected (non-existent user)")
-                r.success()
+    class DeleteClient(TaskSet):
+        @task(1)
+        @tag('correct', 'delete', '200')
+        def delete_client_200(self):
+            try:
+                c = CLIENTS.pop()
+            except KeyError:
+                raise RescheduleTask()
+            r = self.client.delete(f"/oauth2/client/{c.clientId}", verify=False, allow_redirects=False)
+            if r.status_code == 200:
+                logging.info(f"Deleted client: clientName = {c.clientName}, clientId = {c.clientId},"
+                             f" clientSecret = {c.clientSecret}")
             else:
-                failure_str = "Client deletion: did not return code 404. Instead: " + str(r.status_code)
-                logging.info(failure_str)
-                r.failure(failure_str)
+                logging.info('Client deletion did not return code 200')
+                CLIENTS.add(c)
+            self.interrupt()
 
+        @task(1)
+        @tag('error', 'delete', '404')
+        def delete_client_404(self):
+            with self.client.delete(f"/oauth2/client/not_a_client_id", verify=False, allow_redirects=False, catch_response=True) as r:
+                if r.status_code == 404:
+                    logging.info("Client deletion: error code 404 returned as expected (non-existent user)")
+                    r.success()
+                else:
+                    failure_str = "Client deletion: did not return code 404. Instead: " + str(r.status_code)
+                    logging.info(failure_str)
+                    r.failure(failure_str)
+            self.interrupt()
 
 
     @task(1)
