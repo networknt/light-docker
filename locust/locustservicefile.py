@@ -188,5 +188,18 @@ class OAuthServiceRegistration(HttpUser):
             else:
                 logging.info('Service deletion did not return code 200')
                 SERVICES.add(c)
-            self.interrupt()      
+            self.interrupt()
+
+        @task(1)
+        @tag('error','delete','404')
+        def delete_service_404(self):
+            with self.client.delete(f"/oauth2/service/not_service_id", verify=False, allow_redirects=False, catch_response=True) as r:
+                if r.status_code == 404:
+                    logging.info("service deletion: error code 404 returned as expected")
+                    r.success()
+                else:
+                    failure_str = "service deletion: did not return code 404. Instead: " + str(r.status_code)
+                    logging.info(failure_str)
+                    r.failure(failure_str)
+            self.interrupt()
 
