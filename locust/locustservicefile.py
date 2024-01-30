@@ -171,5 +171,22 @@ class OAuthServiceRegistration(HttpUser):
                     failstr = str(f"Unexpected status code when updating service without id: {r.status_code}")
                     logging.info(failstr)
                     r.failure(failstr)
-            self.interrupt()
+                self.interrupt()
+
+    @task(1)
+    class DeleteService(TaskSet):            
+        @task(1)
+        @tag('correct','delete','200')
+        def delete_service_200(self):
+            try:
+                c = SERVICES.pop()
+            except KeyError:
+                raise RescheduleTask()
+            r = self.client.delete(f"/oauth2/service/{c.serviceId}", verify=False, allow_redirects=False)
+            if r.status_code == 200:
+                logging.info(f"Deleted service: serviceName = {c.serviceName}, serviceId = {c.serviceId}")
+            else:
+                logging.info('Service deletion did not return code 200')
+                SERVICES.add(c)
+            self.interrupt()      
 
