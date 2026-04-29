@@ -1,3 +1,7 @@
 .idea
 !*.jar
 *.jar
+.gitnexus
+.claude/
+AGENTS.md
+CLAUDE.md
